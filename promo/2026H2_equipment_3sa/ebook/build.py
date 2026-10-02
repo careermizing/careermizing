@@ -55,6 +55,7 @@ BOOKS = {
         short="실제 장비사 면접 복기본",
         accent="#E0573B",
         break_h2=None,
+        toc_dense=True,
     ),}
 
 COVERS = {
@@ -90,15 +91,14 @@ COVERS = {
                          ("PART 6", "제출 D-3 최종 점검"),
                          ("부록", "3사 문항 원문 · 한 장 요약 · 장면 카드 양식")]),
     "04": dict(image="asml", pos="50% 40%", hl="#FFB49E",
-               title=["실제 장비사", "면접 복기본"], subtitle="면접의 흐름 · 질문 유형 · 회사별 예상 질문",
-               hook=["장비사 면접은 회사가 달라도 흐름이 비슷합니다.", "실제 복기를 질문 하나 단위로 분해해",
-                     "면접관이 무엇을 보는지부터 정리했습니다."],
-               tags=["질문별 평가 · 전략 · 주의", "상황 퀴즈 · PT", "회사별 예상 질문"],
-               contents=[("PART 1", "장비사 면접은 이렇게 진행됩니다"),
-                         ("PART 2", "면접 복기 — ASML CSE · TEL FE"),
+               title=["실제 장비사", "면접 복기본"], subtitle="면접의 흐름 · 질문 유형 · 합격 복기 기반 회사별 면접",
+               hook=["장비사 면접은 회사가 달라도 흐름이 비슷합니다.", "실제 합격자 복기에서 반복된 질문을 유형별로 묶고",
+                     "램리서치 · AMAT · TEL 전형에 맞춰 다시 짰습니다."],
+               tags=["면접 복기 4선", "질문 유형", "PT · 상황 퀴즈", "회사별 면접"],
+               contents=[("PART 1–2", "장비사 면접의 진행 방식과 면접 복기 4선"),
                          ("PART 3–4", "질문 유형별 정리 · 상황 퀴즈와 PT 대비"),
-                         ("PART 5", "램리서치 FSE · AMAT CE · TEL FE 예상 질문"),
-                         ("PART 6", "면접 전 최종 점검"),
+                         ("PART 5–7", "램리서치 FSE · AMAT CE 면접, TEL FE 예상 질문"),
+                         ("PART 8", "면접 전 최종 점검"),
                          ("부록", "질문 은행")]),
 }
 for _k, _c in COVERS.items():
@@ -179,6 +179,7 @@ blockquote blockquote { background: #fff; }
 .toc h1 { padding-top: 6pt; margin-bottom: 12pt; }
 .toc .l1 { font-size: 10.3pt; font-weight: 700; color: var(--navy); margin: 7pt 0 1pt; }
 .toc .l2 { font-size: 8.8pt; line-height: 1.6; color: var(--sub); margin: 0 0 0 12pt; }
+.toc.dense .l1 { margin: 5pt 0 0; } .toc.dense .l2 { line-height: 1.42; }
 .mk { position: absolute; font-size: 2pt; color: #fff; }
 
 /* 장 끝이 몇 줄만 다음 쪽으로 넘어갈 때 쓰는 압축 단계 */
@@ -357,7 +358,7 @@ def build_body_html(body_md, cfg, page_map=None, markers=True, tight=None):
         p = (page_map or {}).get(hid, "")
         rows.append(f'<div class="row l{lvl}"><a class="t" href="#{hid}">{html.escape(text)}</a>'
                     f'<span class="dots"></span><span class="p">{p}</span></div>')
-    toc_html = ('<section class="toc"><h1>차례</h1>' + "\n".join(rows) + "</section>")
+    toc_html = (f'<section class="toc{" dense" if cfg.get("toc_dense") else ""}"><h1>차례</h1>' + "\n".join(rows) + "</section>")
     return toc_html + h
 
 
