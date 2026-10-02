@@ -90,14 +90,15 @@ COVERS = {
                          ("PART 6", "제출 D-3 최종 점검"),
                          ("부록", "3사 문항 원문 · 한 장 요약 · 장면 카드 양식")]),
     "04": dict(image="asml", pos="50% 40%", hl="#FFB49E",
-               title=["실제 장비사", "면접 복기본"], subtitle="면접의 흐름 · 질문 유형 · 회사별 모의 면접",
-               hook=["장비사 면접은 회사가 달라도 흐름이 비슷합니다.", "실제 복기에서 반복된 질문을 유형별로 묶고",
-                     "램리서치 · AMAT · TEL 상황에 맞춰 다시 짰습니다."],
-               tags=["면접 복기 4선", "질문 유형", "PT · 상황 퀴즈", "모의 면접"],
-               contents=[("PART 1–2", "장비사 면접의 진행 방식과 면접 복기 4선"),
+               title=["실제 장비사", "면접 복기본"], subtitle="면접의 흐름 · 질문 유형 · 회사별 예상 질문",
+               hook=["장비사 면접은 회사가 달라도 흐름이 비슷합니다.", "실제 복기를 질문 하나 단위로 분해해",
+                     "면접관이 무엇을 보는지부터 정리했습니다."],
+               tags=["질문별 평가 · 전략 · 주의", "상황 퀴즈 · PT", "회사별 예상 질문"],
+               contents=[("PART 1", "장비사 면접은 이렇게 진행됩니다"),
+                         ("PART 2", "면접 복기 — ASML CSE · TEL FE"),
                          ("PART 3–4", "질문 유형별 정리 · 상황 퀴즈와 PT 대비"),
-                         ("PART 5–7", "램리서치 FSE · AMAT CE 모의 면접, TEL FE 예상 질문"),
-                         ("PART 8", "면접 전 최종 점검"),
+                         ("PART 5", "램리서치 FSE · AMAT CE · TEL FE 예상 질문"),
+                         ("PART 6", "면접 전 최종 점검"),
                          ("부록", "질문 은행")]),
 }
 for _k, _c in COVERS.items():
@@ -156,6 +157,11 @@ th { background: var(--navy); color: #fff; font-weight: 600; text-align: left;
 td { padding: 4.5pt 6pt; border: 1px solid var(--line); vertical-align: top; }
 tbody tr:nth-child(even) td { background: #FAFBFD; }
 td strong { color: var(--navy); }
+table.qa { break-inside: avoid; margin: 4pt 0 9pt; }
+table.qa th:first-child { width: 11mm; background: var(--accent); text-align: center; }
+table.qa th:last-child { font-weight: 700; }
+table.qa td:first-child { width: 11mm; text-align: center; font-weight: 700; color: var(--accent); background: #fff; }
+table.qa tbody tr td { background: #fff; }
 
 /* 인용·예시문 박스 */
 blockquote { margin: 8pt 0 12pt; padding: 9pt 12pt; background: var(--soft);
@@ -334,6 +340,9 @@ def build_body_html(body_md, cfg, page_map=None, markers=True, tight=None):
     h = re.sub(r"<h([12])>(.*?)</h\1>",
                lambda m: (h1 if m.group(1) == "1" else h2)(re.match(r"(.*)", m.group(2), re.S)),
                h, flags=re.S)
+
+    # 질문 표(첫 머리칸이 Q1, Q2 …)는 평가·전략·주의 카드로 그린다
+    h = re.sub(r"<table>(\s*<thead>\s*<tr>\s*<th>Q\d+</th>)", r'<table class="qa">\1', h)
 
     # H1 단위로 <section>을 나눠, 끝 쪽이 몇 줄만 넘어가는 장은 간격을 줄인다
     tight = tight or {}
