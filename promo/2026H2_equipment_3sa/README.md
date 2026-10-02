@@ -19,8 +19,8 @@
 
 | 파일 | 쪽수 |
 |---|---|
-| ebook/pdf/01_3사_합격전략집_기업·사업·기술분석.pdf | 54 |
-| ebook/pdf/03_경험하나로_3사쓰기.pdf | 30 |
-| ebook/pdf/04_제출D-3_최종점검플랜.pdf | 18 |
+| ebook/pdf/01_3사_합격전략집_기업·사업·기술분석.pdf | 48 |
+| ebook/pdf/03_경험하나로_3사쓰기.pdf | 27 |
+| ebook/pdf/04_제출D-3_최종점검플랜.pdf | 14 |
 
 원고(.md)를 고친 뒤 `python3 ebook/build.py`로 다시 만듭니다. (한 권만: `python3 ebook/build.py 03`) 글꼴: Pretendard(OFL).

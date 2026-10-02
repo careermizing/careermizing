@@ -30,7 +30,7 @@ BOOKS = {
         vol="BONUS 01",
         short="3사 합격 전략집",
         accent="#2F5BEA",
-        break_h2=r"^3-\d",
+        break_h2=r"^3-[23]\.",
     ),
     "03": dict(
         src="03_경험하나로_3사쓰기.md",
@@ -38,7 +38,7 @@ BOOKS = {
         vol="BONUS 03",
         short="경험 하나로 3사 쓰기",
         accent="#0E9F8A",
-        break_h2=r"^사례 |^4-7",
+        break_h2=None,
     ),
     "04": dict(
         src="04_제출D-3_최종점검플랜.md",
@@ -46,7 +46,7 @@ BOOKS = {
         vol="BONUS 04",
         short="제출 D-3 최종 점검 플랜",
         accent="#E0573B",
-        break_h2=r"^3-\d",
+        break_h2=None,
     ),
 }
 
@@ -114,9 +114,29 @@ blockquote blockquote { background: #fff; }
 .toc .row .t { flex: 0 1 auto; }
 .toc .row .dots { flex: 1 1 auto; border-bottom: 1px dotted #B8C0CE; transform: translateY(-3pt); }
 .toc .row .p { flex: 0 0 22pt; text-align: right; font-variant-numeric: tabular-nums; }
-.toc .l1 { font-size: 10.5pt; font-weight: 700; color: var(--navy); margin: 9pt 0 2pt; }
-.toc .l2 { font-size: 9pt; color: var(--sub); margin: 1pt 0 1pt 12pt; }
+.toc h1 { padding-top: 6pt; margin-bottom: 12pt; }
+.toc .l1 { font-size: 10.3pt; font-weight: 700; color: var(--navy); margin: 7pt 0 1pt; }
+.toc .l2 { font-size: 8.8pt; line-height: 1.6; color: var(--sub); margin: 0 0 0 12pt; }
 .mk { position: absolute; font-size: 2pt; color: #fff; }
+
+/* 장 끝이 몇 줄만 다음 쪽으로 넘어갈 때 쓰는 압축 단계 */
+.ch.t1 { font-size: 9.3pt; line-height: 1.64; }
+.ch.t1 p { margin-bottom: 6pt; }
+.ch.t1 h2 { margin: 17pt 0 7pt; }
+.ch.t1 h3 { margin: 12pt 0 5pt; }
+.ch.t1 table { font-size: 8.2pt; margin: 5pt 0 10pt; }
+.ch.t1 td { padding: 3.6pt 5.5pt; } .ch.t1 th { padding: 4.2pt 5.5pt; }
+.ch.t1 blockquote { padding: 7pt 11pt; margin: 6pt 0 10pt; }
+.ch.t1 h1 { padding-top: 16pt; margin-bottom: 14pt; }
+.ch.t2 { font-size: 9pt; line-height: 1.56; }
+.ch.t2 p { margin-bottom: 5pt; }
+.ch.t2 h2 { margin: 14pt 0 6pt; }
+.ch.t2 h3 { margin: 10pt 0 4pt; }
+.ch.t2 table { font-size: 7.9pt; line-height: 1.48; margin: 4pt 0 8pt; }
+.ch.t2 td { padding: 3pt 5pt; } .ch.t2 th { padding: 3.6pt 5pt; }
+.ch.t2 blockquote { padding: 6pt 10pt; margin: 5pt 0 8pt; }
+.ch.t2 h1 { padding-top: 10pt; margin-bottom: 12pt; }
+.ch.t2 hr { margin: 9pt 0; }
 """
 
 COVER_CSS = """
@@ -221,7 +241,7 @@ def fix_lists(md_text):
     return "\n".join(out)
 
 
-def build_body_html(body_md, cfg, page_map=None, markers=True):
+def build_body_html(body_md, cfg, page_map=None, markers=True, tight=None):
     h = markdown.markdown(fix_lists(body_md), extensions=["tables", "sane_lists"])
     toc, n = [], [0]
     brk = re.compile(cfg["break_h2"]) if cfg["break_h2"] else None
@@ -254,6 +274,12 @@ def build_body_html(body_md, cfg, page_map=None, markers=True):
     h = re.sub(r"<h([12])>(.*?)</h\1>",
                lambda m: (h1 if m.group(1) == "1" else h2)(re.match(r"(.*)", m.group(2), re.S)),
                h, flags=re.S)
+
+    # H1 단위로 <section>을 나눠, 끝 쪽이 몇 줄만 넘어가는 장은 간격을 줄인다
+    tight = tight or {}
+    parts = re.split(r'(?=<h1 id=")', h)
+    h = parts[0] + "".join(
+        f'<section class="ch t{tight.get(i, 0)}">{c}</section>' for i, c in enumerate(parts[1:]))
 
     rows = []
     for lvl, hid, text in toc:
@@ -299,6 +325,22 @@ def heading_pages(pdf):
     return pm
 
 
+def page_fills(pdf):
+    """쪽마다 본문 글자가 내려온 정도(0~1). 바닥글은 제외."""
+    x = subprocess.run(["pdftotext", "-bbox", str(pdf), "-"], capture_output=True,
+                       text=True, check=True).stdout
+    fills = []
+    for pg in x.split("<page ")[1:]:
+        hgt = float(re.search(r'height="([\d.]+)"', pg).group(1))
+        ys = [float(v) for v in re.findall(r'yMax="([\d.]+)"', pg)]
+        ys = [y for y in ys if y < hgt - 45]
+        fills.append((max(ys) if ys else 0) / (hgt - 57))
+    return fills
+
+
+SPILL = 0.35   # 장의 마지막 쪽이 이보다 덜 차면 그 장을 한 단계 압축
+
+
 def build(key):
     cfg = BOOKS[key]
     md_text = (ROOT / cfg["src"]).read_text(encoding="utf-8")
@@ -310,13 +352,27 @@ def build(key):
         b1_h, b1_p = td / "b1.html", td / "b1.pdf"
         b2_h, b2_p = td / "b2.html", td / "b2.pdf"
         cov_h.write_text(cover_html(cfg, title, subs, meta), encoding="utf-8")
-        b1_h.write_text(page_html(BASE_CSS, build_body_html(body_md, cfg),
-                                  cfg["accent"]), encoding="utf-8")
-        render([dict(html=str(cov_h), pdf=str(cov_p), footer=None),
-                dict(html=str(b1_h), pdf=str(b1_p), footer=FOOTER)])
-        pm = heading_pages(b1_p)
+        render([dict(html=str(cov_h), pdf=str(cov_p), footer=None)])
+        tight = {}
+        for _ in range(4):
+            b1_h.write_text(page_html(BASE_CSS, build_body_html(body_md, cfg, tight=tight),
+                                      cfg["accent"]), encoding="utf-8")
+            render([dict(html=str(b1_h), pdf=str(b1_p), footer=FOOTER)])
+            pm = heading_pages(b1_p)
+            fills = page_fills(b1_p)
+            h1_ids = re.findall(r'<h1 id="(h\d+)"', build_body_html(body_md, cfg))
+            starts = [pm[i] for i in h1_ids if i in pm]
+            changed = False
+            for k, st in enumerate(starts):
+                last = (starts[k + 1] - 1) if k + 1 < len(starts) else len(fills)
+                if last > st and fills[last - 1] < SPILL and tight.get(k, 0) < 2:
+                    tight[k] = tight.get(k, 0) + 1
+                    changed = True
+            if not changed:
+                break
         # 표지 다음부터 본문 쪽수: 바닥글 번호는 본문 PDF 기준(1부터)
-        b2_h.write_text(page_html(BASE_CSS, build_body_html(body_md, cfg, pm, markers=False),
+        b2_h.write_text(page_html(BASE_CSS, build_body_html(body_md, cfg, pm, markers=False,
+                                                            tight=tight),
                                   cfg["accent"]), encoding="utf-8")
         render([dict(html=str(b2_h), pdf=str(b2_p), footer=FOOTER)])
 
@@ -330,7 +386,7 @@ def build(key):
         with open(dst, "wb") as f:
             w.write(f)
     n1, n2 = len(PdfReader(str(dst)).pages), len(pm)
-    print(f"{key}: {dst.name} — {n1}쪽, 목차 항목 {n2}개")
+    print(f"{key}: {dst.name} — {n1}쪽, 목차 항목 {n2}개, 압축한 장 {tight}")
 
 
 if __name__ == "__main__":
