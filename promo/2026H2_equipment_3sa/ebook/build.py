@@ -32,6 +32,24 @@ BOOKS = {
         accent="#2F5BEA",
         break_h2=r"^3-[23]\.",
     ),
+    "02A": dict(
+        src="02A_램리서치_핵심장비분석.md",
+        out="02A_램리서치_핵심장비분석.pdf",
+        vol="BONUS 02-A",
+        short="램리서치 핵심 장비 분석본",
+        accent="#6741D9",
+        break_h2=None,
+        toc_depth=1,
+    ),
+    "02B": dict(
+        src="02B_TEL_핵심장비분석.md",
+        out="02B_TEL_핵심장비분석.pdf",
+        vol="BONUS 02-B",
+        short="TEL 핵심 장비 분석본",
+        accent="#C2255C",
+        break_h2=None,
+        toc_depth=1,
+    ),
     "03": dict(
         src="03_경험하나로_3사쓰기.md",
         out="03_경험하나로_3사쓰기.pdf",
@@ -88,7 +106,7 @@ h2 { font-size: 13.5pt; font-weight: 800; line-height: 1.4; color: var(--navy);
 h2.brk { break-before: page; margin-top: 0; }
 h3 { font-size: 11pt; font-weight: 700; color: var(--navy); margin: 15pt 0 6pt; break-after: avoid; }
 h4 { font-size: 10pt; font-weight: 700; color: var(--accent); margin: 12pt 0 5pt; break-after: avoid; }
-h1 + hr, h2 + hr { display: none; }
+h1 + hr, h2 + hr, .ch > hr:last-child { display: none; }
 
 /* 표 */
 table { width: 100%; border-collapse: collapse; margin: 6pt 0 12pt; font-size: 8.5pt;
@@ -283,6 +301,8 @@ def build_body_html(body_md, cfg, page_map=None, markers=True, tight=None):
 
     rows = []
     for lvl, hid, text in toc:
+        if lvl > cfg.get("toc_depth", 2):
+            continue
         p = (page_map or {}).get(hid, "")
         rows.append(f'<div class="row l{lvl}"><a class="t" href="#{hid}">{html.escape(text)}</a>'
                     f'<span class="dots"></span><span class="p">{p}</span></div>')
