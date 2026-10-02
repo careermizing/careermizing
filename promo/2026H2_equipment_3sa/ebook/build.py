@@ -50,6 +50,15 @@ BOOKS = {
         break_h2=None,
         toc_depth=1,
     ),
+    "02C": dict(
+        src="02C_AMAT_핵심장비분석.md",
+        out="02C_AMAT_핵심장비분석.pdf",
+        vol="BONUS 02-C",
+        short="AMAT 핵심 장비 분석본",
+        accent="#1C7ED6",
+        break_h2=None,
+        toc_depth=1,
+    ),
     "03": dict(
         src="03_경험하나로_3사쓰기.md",
         out="03_경험하나로_3사쓰기.pdf",
@@ -296,7 +305,7 @@ def build_body_html(body_md, cfg, page_map=None, markers=True, tight=None):
     # H1 단위로 <section>을 나눠, 끝 쪽이 몇 줄만 넘어가는 장은 간격을 줄인다
     tight = tight or {}
     parts = re.split(r'(?=<h1 id=")', h)
-    h = parts[0] + "".join(
+    h = f'<section class="ch t{tight.get(-1, 0)}">{parts[0]}</section>' + "".join(
         f'<section class="ch t{tight.get(i, 0)}">{c}</section>' for i, c in enumerate(parts[1:]))
 
     rows = []
@@ -383,6 +392,10 @@ def build(key):
             h1_ids = re.findall(r'<h1 id="(h\d+)"', build_body_html(body_md, cfg))
             starts = [pm[i] for i in h1_ids if i in pm]
             changed = False
+            # 머리말(첫 PART 앞)이 몇 줄만 넘어간 경우
+            if starts and starts[0] >= 2 and fills[starts[0] - 2] < SPILL and tight.get(-1, 0) < 2:
+                tight[-1] = tight.get(-1, 0) + 1
+                changed = True
             for k, st in enumerate(starts):
                 last = (starts[k + 1] - 1) if k + 1 < len(starts) else len(fills)
                 if last > st and fills[last - 1] < SPILL and tight.get(k, 0) < 2:

@@ -22,6 +22,7 @@
 | ebook/pdf/01_3사_합격전략집_기업·사업·기술분석.pdf | 48 |
 | ebook/pdf/02A_램리서치_핵심장비분석.pdf | 20 |
 | ebook/pdf/02B_TEL_핵심장비분석.pdf | 23 |
+| ebook/pdf/02C_AMAT_핵심장비분석.pdf | 24 |
 | ebook/pdf/03_경험하나로_3사쓰기.pdf | 27 |
 | ebook/pdf/04_제출D-3_최종점검플랜.pdf | 14 |
 
