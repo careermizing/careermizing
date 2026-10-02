@@ -25,55 +25,28 @@ OUT = EB / "pdf"
 
 BOOKS = {
     "01": dict(
-        src="01_3사_합격전략집_기업·사업·기술분석.md",
-        out="01_3사_합격전략집_기업·사업·기술분석.pdf",
-        vol="BONUS 01",
-        short="3사 합격 전략집",
+        src="01_현직자의_3사_심층분석집.md",
+        out="01_현직자의_3사_심층분석집.pdf",
+        vol="01",
+        short="현직자의 3사 심층 분석집",
         accent="#2F5BEA",
         break_h2=r"^3-[23]\.",
     ),
-    "02A": dict(
-        src="02A_램리서치_핵심장비분석.md",
-        out="02A_램리서치_핵심장비분석.pdf",
-        vol="BONUS 02-A",
-        short="램리서치 핵심 장비 분석본",
+    "02": dict(
+        src="02_Equipment_Tech_Map.md",
+        out="02_Equipment_Tech_Map.pdf",
+        vol="02",
+        short="Equipment Tech Map",
         accent="#6741D9",
         break_h2=None,
-        toc_depth=1,
-    ),
-    "02B": dict(
-        src="02B_TEL_핵심장비분석.md",
-        out="02B_TEL_핵심장비분석.pdf",
-        vol="BONUS 02-B",
-        short="TEL 핵심 장비 분석본",
-        accent="#C2255C",
-        break_h2=None,
-        toc_depth=1,
-    ),
-    "02C": dict(
-        src="02C_AMAT_핵심장비분석.md",
-        out="02C_AMAT_핵심장비분석.pdf",
-        vol="BONUS 02-C",
-        short="AMAT 핵심 장비 분석본",
-        accent="#1C7ED6",
-        break_h2=None,
-        toc_depth=1,
     ),
     "03": dict(
-        src="03_경험하나로_3사쓰기.md",
-        out="03_경험하나로_3사쓰기.pdf",
-        vol="BONUS 03",
-        short="경험 하나로 3사 쓰기",
+        src="03_합격데이터기반_3사지원전략.md",
+        out="03_합격데이터기반_3사지원전략.pdf",
+        vol="03",
+        short="합격 데이터 기반 3사 지원 전략",
         accent="#0E9F8A",
-        break_h2=None,
-    ),
-    "04": dict(
-        src="04_제출D-3_최종점검플랜.md",
-        out="04_제출D-3_최종점검플랜.pdf",
-        vol="BONUS 04",
-        short="제출 D-3 최종 점검 플랜",
-        accent="#E0573B",
-        break_h2=None,
+        break_h2=r"^사례 A|^4-7|^6-3",
     ),
 }
 
@@ -116,6 +89,9 @@ h2.brk { break-before: page; margin-top: 0; }
 h3 { font-size: 11pt; font-weight: 700; color: var(--navy); margin: 15pt 0 6pt; break-after: avoid; }
 h4 { font-size: 10pt; font-weight: 700; color: var(--accent); margin: 12pt 0 5pt; break-after: avoid; }
 h1 + hr, h2 + hr, .ch > hr:last-child { display: none; }
+/* 굵은 글씨 한 줄짜리 소제목은 다음 내용과 붙여 둔다 */
+p:has(> strong:only-child) { break-after: avoid; }
+h3 + table, h4 + table { break-before: avoid; }
 
 /* 표 */
 table { width: 100%; border-collapse: collapse; margin: 6pt 0 12pt; font-size: 8.5pt;
