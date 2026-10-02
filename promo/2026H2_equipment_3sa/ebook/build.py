@@ -30,7 +30,7 @@ BOOKS = {
         vol="01",
         short="현직자의 3사 심층 분석집",
         accent="#2F5BEA",
-        break_h2=r"^3-[23]\.",
+        break_h2=r"^3-3\.",
     ),
     "02": dict(
         src="02_Equipment_Tech_Map.md",
