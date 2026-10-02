@@ -14,3 +14,13 @@
 | `research/internal.md` | 커리어마이징 내부 Notion 합격 데이터·인사이트 | 2026-10-01 |
 
 ※ 웹 사실은 검색 결과 요약으로 확인했습니다(원문 페이지 열람 불가 환경). 외부 게시 전 숫자·제품명·공고 원문을 재확인하세요.
+
+## 전자책(PDF)
+
+| 파일 | 쪽수 |
+|---|---|
+| ebook/pdf/01_3사_합격전략집_기업·사업·기술분석.pdf | 54 |
+| ebook/pdf/03_경험하나로_3사쓰기.pdf | 30 |
+| ebook/pdf/04_제출D-3_최종점검플랜.pdf | 18 |
+
+원고(.md)를 고친 뒤 `python3 ebook/build.py`로 다시 만듭니다. (한 권만: `python3 ebook/build.py 03`) 글꼴: Pretendard(OFL).
