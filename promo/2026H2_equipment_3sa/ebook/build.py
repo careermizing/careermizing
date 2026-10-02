@@ -48,6 +48,14 @@ BOOKS = {
         accent="#0E9F8A",
         break_h2=r"^사례 A|^4-7|^6-3",
     ),
+    "04": dict(
+        src="04_실제_장비사_면접복기본.md",
+        out="04_실제_장비사_면접복기본.pdf",
+        vol="04",
+        short="실제 장비사 면접 복기본",
+        accent="#E0573B",
+        break_h2=None,
+    ),
 }
 
 FONT_FACES = "\n".join(
