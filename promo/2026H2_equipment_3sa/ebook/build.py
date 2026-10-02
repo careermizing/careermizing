@@ -156,24 +156,34 @@ body { font-family:'Pretendard',sans-serif; word-break: keep-all; }
 .cover { position: relative; width: 210mm; height: 297mm; overflow: hidden;
          background: linear-gradient(160deg, #0F1E3D 0%, #13274F 55%, #0A1530 100%); color: #fff; }
 .band { position:absolute; left:0; top:0; width:9mm; height:100%; background: var(--accent); }
-.grid { position:absolute; inset:0; opacity:.07;
+.grid { position:absolute; inset:0; opacity:.06;
         background-image: linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg,#fff 1px,transparent 1px);
         background-size: 12mm 12mm; }
-.circle { position:absolute; right:-45mm; top:40mm; width:150mm; height:150mm; border-radius:50%;
-          border: 1.2mm solid var(--accent); opacity:.55; }
-.circle2 { position:absolute; right:-20mm; top:65mm; width:100mm; height:100mm; border-radius:50%;
-           border: .5mm solid #fff; opacity:.18; }
-.inner { position:absolute; left:26mm; right:24mm; top:30mm; bottom:26mm; display:flex; flex-direction:column; }
+.circle { position:absolute; right:-40mm; top:-30mm; width:130mm; height:130mm; border-radius:50%;
+          border: 1.2mm solid var(--accent); opacity:.5; }
+.circle2 { position:absolute; right:-15mm; top:-5mm; width:80mm; height:80mm; border-radius:50%;
+           border: .5mm solid #fff; opacity:.16; }
+.top { position:absolute; left:26mm; right:24mm; top:28mm; }
 .brand { font-size:10pt; font-weight:800; letter-spacing:3.5pt; }
 .vol { margin-top:3mm; font-size:9pt; font-weight:600; letter-spacing:2pt; color: var(--accent); }
-.mid { margin-top:auto; margin-bottom:auto; }
+.head { position:absolute; left:26mm; right:24mm; top:76mm; }
 .season { display:inline-block; font-size:10pt; font-weight:600; padding:3pt 9pt; border:1px solid rgba(255,255,255,.5);
-          border-radius:20pt; margin-bottom:9mm; }
-.title { font-size:34pt; font-weight:800; line-height:1.22; letter-spacing:-1pt; }
-.subs { margin-top:8mm; }
-.subs div { font-size:13.5pt; font-weight:500; color:#C9D3E6; margin-top:2mm; }
-.foot { border-top:1px solid rgba(255,255,255,.25); padding-top:5mm; font-size:9pt; color:#AEB9CF;
-        display:flex; justify-content:space-between; }
+          border-radius:20pt; margin-bottom:7mm; }
+.title { font-size:32pt; font-weight:800; line-height:1.22; letter-spacing:-1pt; }
+.subs { margin-top:6mm; }
+.subs div { font-size:13pt; font-weight:500; color:#C9D3E6; margin-top:1.5mm; }
+.photos { position:absolute; left:26mm; right:24mm; top:162mm; height:66mm;
+          display:grid; grid-template-columns: repeat(3, 1fr); gap:3mm; }
+.ph { position:relative; border-radius:2mm; overflow:hidden; background-size:cover; background-position:center;
+      box-shadow: 0 2mm 6mm rgba(0,0,0,.35); }
+.ph::after { content:""; position:absolute; inset:0;
+             background: linear-gradient(180deg, rgba(10,21,48,0) 74%, rgba(10,21,48,.9) 100%); }
+.ph span { position:absolute; left:3mm; bottom:2.6mm; z-index:1; font-size:7.6pt; font-weight:700; letter-spacing:1.2pt; }
+.ph.lam { background-position: 56% 40%; }
+.ph.amat { background-position: 52% 50%; }
+.ph.tel { background-position: 78% 40%; }
+.foot { position:absolute; left:26mm; right:24mm; bottom:22mm; border-top:1px solid rgba(255,255,255,.25);
+        padding-top:5mm; font-size:9pt; color:#AEB9CF; display:flex; justify-content:space-between; }
 """
 
 FOOTER = (
@@ -312,18 +322,24 @@ def cover_html(cfg, title, subs, meta):
     sub_html = "".join(f"<div>{html.escape(s)}</div>" for s in subs)
     parts = [p.strip() for p in meta.split("·")]
     date = next((p for p in parts if "기준" in p), "")
+    cv = EB / "cover"
+    photos = "".join(
+        f'<div class="ph {k}" style="background-image:url({(cv / (k + ".jpg")).as_uri()})"><span>{n}</span></div>'
+        for k, n in [("lam", "LAM RESEARCH"), ("amat", "APPLIED MATERIALS"), ("tel", "TOKYO ELECTRON")])
     body = f"""
 <div class="cover"><div class="grid"></div><div class="circle"></div><div class="circle2"></div><div class="band"></div>
-<div class="inner">
-  <div class="brand">CAREERMIZING</div>
-  <div class="vol">{cfg['vol']} · 외국계 장비사 3사 프로모션</div>
-  <div class="mid">
+  <div class="top">
+    <div class="brand">CAREERMIZING</div>
+    <div class="vol">{cfg['vol']} · 외국계 장비사 3사 프로모션</div>
+  </div>
+  <div class="head">
     <div class="season">2026 하반기 공채</div>
     <div class="title">{html.escape(title)}</div>
     <div class="subs">{sub_html}</div>
   </div>
+  <div class="photos">{photos}</div>
   <div class="foot"><span>{html.escape(date)}</span><span>MAX 플랜 구매자 전용 자료</span></div>
-</div></div>"""
+</div>"""
     return page_html(COVER_CSS, body, cfg["accent"])
 
 
