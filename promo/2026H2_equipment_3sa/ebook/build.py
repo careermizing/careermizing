@@ -57,6 +57,52 @@ BOOKS = {
         break_h2=None,
     ),}
 
+COVERS = {
+    "01": dict(image="lam", pos="40% 50%", h="49%", hl="#9DB6FF",
+               title=["현직자의", "3사 심층 분석집"], subtitle="사업 방향 · 기술 전략 · 직무 구조",
+               hook=["같은 장비사라도 돈을 버는 곳이 다릅니다.", "세 회사가 어디에 투자하고 어떤 사람을 뽑는지",
+                     "숫자와 기술 전환으로 먼저 읽어야 합니다."],
+               tags=["램리서치", "AMAT", "TEL", "재무 · 기술 · 직무"],
+               contents=[("PART 0", "핵심 요약 — 3사를 한 장으로"),
+                         ("PART 1", "산업 구조와 재무 — 숫자로 보는 3사"),
+                         ("PART 2", "기술 변곡점 — 어떤 전환이 오고, 누가 어디에 서 있는가"),
+                         ("PART 3", "회사별 심층 — 사업 방향 · 기술 전략 · 직무 구조"),
+                         ("PART 4", "종합 — 3사 비교와 지원자가 가져갈 것"),
+                         ("부록", "용어집 · 주요 출처")]),
+    "02": dict(image="amat", pos="50% 50%", hl="#C3B2FF",
+               title=["Equipment", "Tech Map"], subtitle="핵심 장비의 원리 · 적용 공정 · 기술 포인트",
+               hook=["장비 이름을 외우는 것으로는 부족합니다.", "어느 공정에서 무엇을 해결하는 장비인지",
+                     "설명할 수 있어야 자소서와 기술면접이 연결됩니다."],
+               tags=["식각 · 증착", "트랙 · 세정", "HBM · GAA", "기술면접"],
+               contents=[("PART 0", "한눈에 보는 3사 장비 지도"),
+                         ("PART 1–3", "램리서치 · AMAT · TEL 장비별 원리와 적용 공정"),
+                         ("PART 4", "공정 트렌드 × 3사 장비 — HBM · GAA · 3D NAND · EUV · 패키징"),
+                         ("PART 5", "기술면접 연결 — 예상 질문 15개와 점검표")]),
+    "03": dict(image="tel", pos="70% 45%", hl="#7FDCCB",
+               title=["합격 데이터 기반", "3사 지원 전략"], subtitle="하나의 경험으로 램리서치 · AMAT · TEL 모두 지원하기",
+               hook=["경험을 세 개 만들 필요는 없습니다.", "같은 경험에서 회사마다 꺼내는 장면이 달라질 뿐입니다.",
+                     "제출 3일 전 점검까지 한 권에 담았습니다."],
+               tags=["장면 카드", "회사별 변환", "사례 6개", "D-3 점검"],
+               contents=[("PART 1–2", "원리와 도구 — 경험을 장면 카드로 쪼개기"),
+                         ("PART 3", "회사별 변환 규칙"),
+                         ("PART 4", "사례 6개 × 3사 작성 예시"),
+                         ("PART 5", "돌려쓰기 실수 10가지"),
+                         ("PART 6", "제출 D-3 최종 점검"),
+                         ("부록", "3사 문항 원문 · 한 장 요약 · 장면 카드 양식")]),
+    "04": dict(image="asml", pos="50% 40%", hl="#FFB49E",
+               title=["실제 장비사", "면접 복기본"], subtitle="면접의 흐름 · 질문 유형 · 회사별 모의 면접",
+               hook=["장비사 면접은 회사가 달라도 흐름이 비슷합니다.", "실제 복기에서 반복된 질문을 유형별로 묶고",
+                     "램리서치 · AMAT · TEL 상황에 맞춰 다시 짰습니다."],
+               tags=["면접 복기 4선", "질문 유형", "PT · 상황 퀴즈", "모의 면접"],
+               contents=[("PART 1–2", "장비사 면접의 진행 방식과 면접 복기 4선"),
+                         ("PART 3–4", "질문 유형별 정리 · 상황 퀴즈와 PT 대비"),
+                         ("PART 5–7", "램리서치 FSE · AMAT CE 모의 면접, TEL FE 예상 질문"),
+                         ("PART 8", "면접 전 최종 점검"),
+                         ("부록", "질문 은행")]),
+}
+for _k, _c in COVERS.items():
+    BOOKS[_k]["cover"] = _c
+
 FONT_FACES = "\n".join(
     f"@font-face{{font-family:'Pretendard';font-weight:{w};"
     f"src:url('{(FONTS / f'Pretendard-{n}.woff2').as_uri()}') format('woff2');}}"
@@ -153,37 +199,31 @@ COVER_CSS = """
 @page { size: A4; margin: 0; }
 html,body { margin:0; height:100%; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 body { font-family:'Pretendard',sans-serif; word-break: keep-all; }
-.cover { position: relative; width: 210mm; height: 297mm; overflow: hidden;
-         background: linear-gradient(160deg, #0F1E3D 0%, #13274F 55%, #0A1530 100%); color: #fff; }
-.band { position:absolute; left:0; top:0; width:9mm; height:100%; background: var(--accent); }
-.grid { position:absolute; inset:0; opacity:.06;
-        background-image: linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg,#fff 1px,transparent 1px);
-        background-size: 12mm 12mm; }
-.circle { position:absolute; right:-40mm; top:-30mm; width:130mm; height:130mm; border-radius:50%;
-          border: 1.2mm solid var(--accent); opacity:.5; }
-.circle2 { position:absolute; right:-15mm; top:-5mm; width:80mm; height:80mm; border-radius:50%;
-           border: .5mm solid #fff; opacity:.16; }
-.top { position:absolute; left:26mm; right:24mm; top:28mm; }
-.brand { font-size:10pt; font-weight:800; letter-spacing:3.5pt; }
-.vol { margin-top:3mm; font-size:9pt; font-weight:600; letter-spacing:2pt; color: var(--accent); }
-.head { position:absolute; left:26mm; right:24mm; top:76mm; }
-.season { display:inline-block; font-size:10pt; font-weight:600; padding:3pt 9pt; border:1px solid rgba(255,255,255,.5);
-          border-radius:20pt; margin-bottom:7mm; }
-.title { font-size:32pt; font-weight:800; line-height:1.22; letter-spacing:-1pt; }
-.subs { margin-top:6mm; }
-.subs div { font-size:13pt; font-weight:500; color:#C9D3E6; margin-top:1.5mm; }
-.photos { position:absolute; left:26mm; right:24mm; top:162mm; height:66mm;
-          display:grid; grid-template-columns: repeat(3, 1fr); gap:3mm; }
-.ph { position:relative; border-radius:2mm; overflow:hidden; background-size:cover; background-position:center;
-      box-shadow: 0 2mm 6mm rgba(0,0,0,.35); }
-.ph::after { content:""; position:absolute; inset:0;
-             background: linear-gradient(180deg, rgba(10,21,48,0) 74%, rgba(10,21,48,.9) 100%); }
-.ph span { position:absolute; left:3mm; bottom:2.6mm; z-index:1; font-size:7.6pt; font-weight:700; letter-spacing:1.2pt; }
-.ph.lam { background-position: 56% 40%; }
-.ph.amat { background-position: 52% 50%; }
-.ph.tel { background-position: 78% 40%; }
-.foot { position:absolute; left:26mm; right:24mm; bottom:22mm; border-top:1px solid rgba(255,255,255,.25);
-        padding-top:5mm; font-size:9pt; color:#AEB9CF; display:flex; justify-content:space-between; }
+.cover { position: relative; width: 210mm; height: 297mm; overflow: hidden; color: #fff;
+         background: linear-gradient(180deg, #1C2029 0%, #232934 46%, #232934 100%); }
+.photo { position:absolute; left:0; right:0; bottom:0; height:56%; background-size:cover;
+         filter: saturate(.9) brightness(.82);
+         -webkit-mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,.35) 22%, rgba(0,0,0,.85) 48%, #000 70%, rgba(0,0,0,.6) 92%, rgba(0,0,0,.4) 100%);
+         mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,.35) 22%, rgba(0,0,0,.85) 48%, #000 70%, rgba(0,0,0,.6) 92%, rgba(0,0,0,.4) 100%); }
+.in { position:absolute; left:18mm; right:18mm; top:0; bottom:0; }
+.brand { position:absolute; top:22mm; left:0; font-size:9.6pt; font-weight:700; letter-spacing:3.4pt; }
+.rule { position:absolute; left:0; right:0; height:0; border-top:.6pt solid rgba(255,255,255,.28); }
+.series { position:absolute; top:35mm; font-size:9pt; font-weight:400; letter-spacing:1.6pt; color:#D5DAE3; }
+.eyebrow { position:absolute; top:43mm; font-size:9pt; font-weight:600; letter-spacing:2pt; color: var(--hl); }
+.title { position:absolute; top:51mm; font-size:31pt; font-weight:800; line-height:1.24; letter-spacing:-.6pt; }
+.subtitle { position:absolute; top:84mm; font-size:12pt; font-weight:400; color:#E6EAF0; }
+.bar { position:absolute; top:95mm; width:31mm; height:.9mm; background: var(--hl); }
+.hook { position:absolute; top:101mm; font-size:10pt; line-height:1.85; color:#E1E5EC; }
+.tags { position:absolute; top:125mm; display:flex; gap:2mm; flex-wrap:wrap; }
+.tags span { font-size:8.2pt; padding:1.6mm 3.4mm; border:.6pt solid rgba(255,255,255,.6); border-radius:10mm;
+             background: rgba(20,24,31,.35); }
+.ctitle { position:absolute; top:144mm; font-size:8.4pt; letter-spacing:4.4pt; color:#AEB6C4; }
+.contents { position:absolute; top:152mm; left:0; right:0; }
+.contents .r { display:flex; font-size:8.8pt; line-height:1.4; margin-bottom:3.3mm; }
+.contents .k { flex: 0 0 27mm; font-weight:700; color: var(--hl); }
+.contents .v { color:#E8EBF0; }
+.foot { position:absolute; bottom:18mm; left:0; right:0; padding-top:4mm; border-top:.6pt solid rgba(255,255,255,.28);
+        font-size:8.8pt; color:#E1E5EC; display:flex; justify-content:space-between; }
 """
 
 FOOTER = (
@@ -319,28 +359,32 @@ def page_html(css, body, accent):
 
 
 def cover_html(cfg, title, subs, meta):
-    sub_html = "".join(f"<div>{html.escape(s)}</div>" for s in subs)
-    parts = [p.strip() for p in meta.split("·")]
-    date = next((p for p in parts if "기준" in p), "")
-    cv = EB / "cover"
-    photos = "".join(
-        f'<div class="ph {k}" style="background-image:url({(cv / (k + ".jpg")).as_uri()})"><span>{n}</span></div>'
-        for k, n in [("lam", "LAM RESEARCH"), ("amat", "APPLIED MATERIALS"), ("tel", "TOKYO ELECTRON")])
+    c = cfg["cover"]
+    img = EB / "cover" / f"{c['image']}.jpg"
+    photo = (f'<div class="photo" style="background-image:url({img.as_uri()});background-position:{c["pos"]};height:{c.get("h", "56%")}"></div>'
+             if img.exists() else "")
+    esc = html.escape
+    rows = "".join(f'<div class="r"><span class="k">{esc(k)}</span><span class="v">{esc(v)}</span></div>'
+                   for k, v in c["contents"])
+    tags = "".join(f"<span>{esc(t)}</span>" for t in c["tags"])
     body = f"""
-<div class="cover"><div class="grid"></div><div class="circle"></div><div class="circle2"></div><div class="band"></div>
-  <div class="top">
-    <div class="brand">CAREERMIZING</div>
-    <div class="vol">{cfg['vol']} · 외국계 장비사 3사 프로모션</div>
-  </div>
-  <div class="head">
-    <div class="season">2026 하반기 공채</div>
-    <div class="title">{html.escape(title)}</div>
-    <div class="subs">{sub_html}</div>
-  </div>
-  <div class="photos">{photos}</div>
-  <div class="foot"><span>{html.escape(date)}</span><span>MAX 플랜 구매자 전용 자료</span></div>
-</div>"""
-    return page_html(COVER_CSS, body, cfg["accent"])
+<div class="cover">{photo}<div class="in">
+  <div class="brand">CAREERMIZING</div>
+  <div class="rule" style="top:30mm"></div>
+  <div class="series">외국계 장비사 합격 패키지 &nbsp;{cfg['vol'].lstrip('0')} / 4</div>
+  <div class="eyebrow">2026 하반기 램리서치 · AMAT · TEL 신입 공채 대비</div>
+  <div class="title">{'<br>'.join(esc(t) for t in c['title'])}</div>
+  <div class="subtitle">{esc(c['subtitle'])}</div>
+  <div class="bar"></div>
+  <div class="hook">{'<br>'.join(esc(t) for t in c['hook'])}</div>
+  <div class="tags">{tags}</div>
+  <div class="rule" style="top:139mm"></div>
+  <div class="ctitle">CONTENTS</div>
+  <div class="contents">{rows}</div>
+  <div class="foot"><span>작성 기준일 2026년 10월 1일</span><span>MAX 플랜 구매자 전용 자료</span></div>
+</div></div>"""
+    return page_html(COVER_CSS, body, cfg["accent"]).replace(
+        ":root{", f":root{{--hl:{c['hl']};", 1)
 
 
 def heading_pages(pdf):
