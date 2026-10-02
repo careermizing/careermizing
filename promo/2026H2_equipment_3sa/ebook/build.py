@@ -55,23 +55,7 @@ BOOKS = {
         short="실제 장비사 면접 복기본",
         accent="#E0573B",
         break_h2=None,
-    ),    "04A": dict(
-        src="04A_램리서치_FSE_면접대비본.md",
-        out="04A_램리서치_FSE_면접대비본.pdf",
-        vol="04-A",
-        short="램리서치 FSE 면접 대비본",
-        accent="#6741D9",
-        break_h2=None,
-    ),
-    "04B": dict(
-        src="04B_AMAT_CE_면접대비본.md",
-        out="04B_AMAT_CE_면접대비본.pdf",
-        vol="04-B",
-        short="AMAT CE 면접 대비본",
-        accent="#1C7ED6",
-        break_h2=None,
-    ),
-}
+    ),}
 
 FONT_FACES = "\n".join(
     f"@font-face{{font-family:'Pretendard';font-weight:{w};"
