@@ -18,6 +18,9 @@ from pathlib import Path
 import markdown
 from pypdf import PdfReader, PdfWriter
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from charts import CHART_CSS, build_charts  # noqa: E402
+
 ROOT = Path(__file__).resolve().parent.parent
 EB = ROOT / "ebook"
 FONTS = EB / "fonts"
@@ -111,7 +114,7 @@ FONT_FACES = "\n".join(
                  ("SemiBold", 600), ("Bold", 700), ("ExtraBold", 800)]
 )
 
-BASE_CSS = """
+BASE_CSS_RAW = """
 @page { size: A4; margin: 20mm 18mm 20mm 18mm; }
 :root { --ink:#1B2333; --sub:#5B6475; --line:#E3E7EE; --soft:#F5F7FB; --navy:#0F1E3D; }
 * { box-sizing: border-box; }
@@ -201,6 +204,7 @@ blockquote blockquote { background: #fff; }
 .ch.t2 h1 { padding-top: 10pt; margin-bottom: 12pt; }
 .ch.t2 hr { margin: 9pt 0; }
 """
+BASE_CSS = BASE_CSS_RAW + CHART_CSS
 
 COVER_CSS = """
 @page { size: A4; margin: 0; }
@@ -309,6 +313,8 @@ def fix_lists(md_text):
 
 
 def build_body_html(body_md, cfg, page_map=None, markers=True, tight=None):
+    charts = build_charts({"02": (ROOT / BOOKS["02"]["src"]).read_text(encoding="utf-8")})
+    body_md = re.sub(r"^<!--chart:(\w+)-->$", lambda m: charts[m.group(1)], body_md, flags=re.M)
     h = markdown.markdown(fix_lists(body_md), extensions=["tables", "sane_lists"])
     toc, n = [], [0]
     brk = re.compile(cfg["break_h2"]) if cfg["break_h2"] else None
