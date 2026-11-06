@@ -175,6 +175,23 @@ p.sub {{ font-weight: 500; font-size: 27px; line-height: 1.55; color: var(--text
 .cols .col li {{ font-weight: 500; font-size: 28px; line-height: 1.5; color: var(--text2); }}
 .cols .col li::before {{ content: "• "; }}
 .result {{ margin-top: auto; background: #fff; border: 2px solid #87B0FF; border-radius: 22px; padding: 26px 22px; font-weight: 900; font-size: 32px; line-height: 1.45; color: var(--accent); }}
+.gradient .cols .col, .dark .cols .col, .dark2 .cols .col {{ background: #131D3C; border-color: #334A85; color: #fff; }}
+.gradient .cols .col.right, .dark .cols .col.right, .dark2 .cols .col.right {{ background: #142445; border-color: #3370DB; }}
+.gradient .cols .col li, .dark .cols .col li {{ color: #B8C4E0; }}
+.gradient .result, .dark .result {{ background: #0B1326; border-color: #4A8FFF; color: #73ABFF; }}
+.gradient .quote .qlabel, .dark .quote .qlabel {{ color: #B8C4E0; }}
+.gradient .quote .qtext, .dark .quote .qtext {{ color: #fff; }}
+.gradient .card .label {{ color: #FBC61E; }}
+.gradient .card.highlight {{ background: #142445; border: 2px solid #3370DB; }}
+.gradient .conclusion, .dark .conclusion {{ color: #fff; }}
+.gradient .conclusion.yellow, .dark .conclusion.yellow {{ color: #FBC61E; }}
+.radial .checklist-dark .ck {{ font-size: 36px; }}
+.radial .button.big {{ background: #2E75F2; }}
+.gradient mark, .dark mark, .dark2 mark, .radial mark {{ background: none; color: #FBC61E; }}
+.c1440 {{ padding-bottom: 110px; }}
+.c1440 .page.bottom {{ bottom: 44px; }}
+.c1440 .source {{ bottom: 44px; right: 76px; }}
+.c1440 .cover-photo {{ padding-bottom: 120px; }}
 .chip.before-chip {{ background: #DB3838; color: #fff; }}
 .chip.after-chip {{ background: var(--accent); color: #fff; }}
 .chip.neutral {{ background: #1F242E; color: #fff; }}
@@ -302,9 +319,14 @@ def brand(spec, s, theme_cls):
     return '<div class="brand"><span class="dot"></span>CareerMizing</div>'
 
 
+CANVAS = {"v": "1350"}
+
+
 def page_no(i, n, s, bottom=False):
     if s.get("page") is False:
         return ""
+    if CANVAS["v"] == "1440":
+        bottom = True
     cls = "page bottom" if bottom else "page"
     return f'<div class="{cls}">{i:02d} / {n:02d}</div>'
 
@@ -327,7 +349,8 @@ def chip(s, default_cls=""):
 
 
 def conclusion(s):
-    return f'<div class="conclusion">{md(s["conclusion"])}</div>' if s.get("conclusion") else ""
+    cls = "conclusion " + s.get("conclusion_style", "")
+    return f'<div class="{cls.strip()}">{md(s["conclusion"])}</div>' if s.get("conclusion") else ""
 
 
 def disclaimer(s):
@@ -535,7 +558,7 @@ def build_slide(spec, s, i, n):
                  + headline(s) + body + f'<div class="stack">{cards_html(s.get("cards", []), True)}</div>' + emp + cap)
 
     elif t == "promo_cta":
-        th = "dark2"
+        th = "radial" if s.get("theme") == "radial" else "dark2"
         checks = "".join(f'<div class="ck">{md(c)}</div>' for c in s.get("checks", []))
         inner = (page_no(i, n, s) + (f'<div class="chip solid">{md(s["chip"])}</div>' if s.get("chip") else "")
                  + headline(s) + f'<div class="checklist-dark">{checks}</div>'
@@ -599,7 +622,8 @@ def build_slide(spec, s, i, n):
     else:
         inner = f'<h1 class="headline">[unknown type: {esc(t)}]</h1>'
 
-    return f'<section class="slide {th} {extra_cls}" id="s{i}">{inner}</section>'
+    c1440 = ' c1440' if CANVAS['v'] == '1440' else ''
+    return f'<section class="slide {th} {extra_cls}{c1440}" id="s{i}">{inner}</section>'
 
 
 def page_html(spec, body, css, title):
@@ -618,6 +642,7 @@ def main():
         sys.exit(1)
     spec_path, out_dir = sys.argv[1], sys.argv[2]
     spec = json.load(open(spec_path, encoding="utf-8"))
+    CANVAS["v"] = str(spec.get("canvas", "1350"))
     os.makedirs(out_dir, exist_ok=True)
     css = build_css(spec)
     slides = spec["slides"]
