@@ -21,6 +21,8 @@ const path = require('path');
     await page.goto(url, { waitUntil: 'networkidle' });
     await page.evaluate(() => document.fonts.ready);
     const el = await page.$('.slide');
+    const over = await el.evaluate(e => e.scrollHeight - e.clientHeight);
+    if (over > 0) console.warn(`WARN ${f}: content overflows by ${over}px — 카피를 줄이거나 카드 수를 줄이세요`);
     const box = await el.boundingBox();
     await page.setViewportSize({ width: Math.round(box.width), height: Math.round(box.height) });
     const out = path.join(dir, f.replace(/\.html$/, '.png'));
