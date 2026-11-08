@@ -8,7 +8,7 @@
 :root{
   --paper:#f5f7f8; --sheet:#ffffff; --ink:#1d2a33; --ink-2:#55646e; --line:#d6dee3; --grid:#e8edf0;
   --accent:#1f7fa8; --accent-soft:#dcedf4;
-  --r-pm:#1f7fa8; --r-mkt:#7a5ea8; --r-cj:#2f8f6b; --r-camp:#c0662e; --r-bud:#9a7b1c; --r-all:#55646e;
+  --r-res:#2f8f6b; --r-pres:#c0662e; --r-ppt:#1f7fa8; --r-all:#55646e;
   --warn:#b4472f;
   --f-display:"Gowun Batang", "Noto Serif KR", serif;
   --f-body:"IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
@@ -17,12 +17,12 @@
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
   --paper:#11181d; --sheet:#172128; --ink:#e3eaee; --ink-2:#9aabb5; --line:#2c3a43; --grid:#1c2830;
   --accent:#5bb6dc; --accent-soft:#1d3a48;
-  --r-pm:#5bb6dc; --r-mkt:#b19ae0; --r-cj:#5fc79d; --r-camp:#ec9560; --r-bud:#d6b54d; --r-all:#9aabb5; --warn:#ec7b62;
+  --r-res:#5fc79d; --r-pres:#ec9560; --r-ppt:#5bb6dc; --r-all:#9aabb5; --warn:#ec7b62;
   color-scheme:dark }}
 :root[data-theme="dark"]{
   --paper:#11181d; --sheet:#172128; --ink:#e3eaee; --ink-2:#9aabb5; --line:#2c3a43; --grid:#1c2830;
   --accent:#5bb6dc; --accent-soft:#1d3a48;
-  --r-pm:#5bb6dc; --r-mkt:#b19ae0; --r-cj:#5fc79d; --r-camp:#ec9560; --r-bud:#d6b54d; --r-all:#9aabb5; --warn:#ec7b62;
+  --r-res:#5fc79d; --r-pres:#ec9560; --r-ppt:#5bb6dc; --r-all:#9aabb5; --warn:#ec7b62;
   color-scheme:dark }
 *{box-sizing:border-box}
 body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.6;
@@ -80,6 +80,8 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .ms-card .date{font-family:var(--f-mono);font-size:13px;color:var(--accent);font-variant-numeric:tabular-nums}
 .ms-card ul{margin:0;padding-left:18px;color:var(--ink-2);font-size:13px}
 .ms-card.deadline{border-color:var(--warn)}
+.ms-card.pick{border-color:var(--accent);background:var(--accent-soft)}
+.cap{font-size:13px;color:var(--ink-2)}
 .ms-card.deadline .date{color:var(--warn)}
 /* RnR */
 table{border-collapse:collapse;width:100%;font-size:13.5px}
@@ -102,11 +104,21 @@ footer{font-size:12px;color:var(--ink-2)}
   <header>
     <div class="eyebrow">디지털마케팅 팀 프로젝트 · 2026년 2학기 · 1차 회의 2026-11-08</div>
     <h1>오늘의집 프로젝트 로드맵</h1>
-    <p class="lede">보고서는 팀 발표일 1주일 전 자정에 마감됩니다. 발표일이 아직 확정되지 않아 두 안을 함께 둡니다. A안은 보고서 11/17(화), B안은 11/24(화) 마감입니다. 발표는 보고서 마감 1주일 뒤 같은 요일로 가정했습니다. 위 토글로 바꿔 볼 수 있습니다.</p>
+    <p class="lede">경쟁 PT 형식의 가상 제안입니다. 분석은 캠페인을 설득하기 위한 근거로 거꾸로 쌓습니다. 보고서는 팀 발표일 1주일 전 자정에 마감됩니다. 발표일이 아직 확정되지 않아 두 안을 함께 둡니다. A안은 보고서 11/17(화), B안은 11/24(화) 마감입니다. 발표는 보고서 마감 1주일 뒤 같은 요일로 가정했습니다. 위 토글로 바꿔 볼 수 있습니다.</p>
     <div class="flow" aria-label="보고서 흐름">
-      <span>시장 분석</span><i>→</i><span>고객 여정</span><i>→</i><span>핵심 문제 1개</span><i>→</i><span>캠페인</span><i>→</i><span>예산 배분</span><i>→</i><span>성과 측정</span><i>→</i><span>출처·AI 내역</span>
+      <span>시장</span><i>→</i><span>고객 여정</span><i>→</i><span>문제 1개</span><i>→</i><span><b>캠페인 「새집 D-60」</b></span><i>→</i><span>예산</span><i>→</i><span>측정</span>
     </div>
   </header>
+
+  <section class="sheet" aria-labelledby="s-camp">
+    <div class="sheet-head"><h2 id="s-camp">제안할 캠페인</h2><span class="dim">1차 회의에서 1개 선택</span></div>
+    <div class="ms-list">
+      <div class="ms-card pick"><span class="date">A · 추천</span><h3>새집 D-60</h3><ul><li>문제: 이사·신혼 고객이 시공·대형 가구 결정 단계에서 경쟁사로 빠져나감</li><li>입주일 등록 → D-60 플래너, 무료 실측·견적 비교, 번들, D+30 집들이 리워드</li><li>지표: 등록 고객 90일 고관여 구매 전환율</li></ul></div>
+      <div class="ms-card"><span class="date">B · 대안</span><h3>보이는 그대로 산다</h3><ul><li>문제: 콘텐츠에서 본 상품을 다른 쇼핑몰에서 구매</li><li>집들이 사진 속 공간을 방 통째로 담는 번들</li><li>A의 구매 단계로 흡수 가능</li></ul></div>
+      <div class="ms-card"><span class="date">C · 비추천</span><h3>우리집 리셋 챌린지</h3><ul><li>문제: MAU 정체, 집들이 업로드 감소</li><li>비포·애프터 UGC 챌린지</li><li>흔한 형식이라 A의 공유 단계로 흡수</li></ul></div>
+    </div>
+    <p class="cap">카피: 구경은 충분히 했어요. 이제 우리 집 차례. · 예산은 가상 10억 원 기준 비중으로 제시</p>
+  </section>
 
   <section class="sheet" aria-labelledby="s-key">
     <div class="sheet-head">
@@ -137,16 +149,14 @@ footer{font-size:12px;color:var(--ink-2)}
   <section class="sheet" aria-labelledby="s-rnr">
     <div class="sheet-head">
       <h2 id="s-rnr">역할 분담 (R&amp;R)</h2>
-      <div class="seg" role="group" aria-label="팀 인원">
-        <button type="button" data-size="3" aria-pressed="false">3명</button>
-        <button type="button" data-size="4" aria-pressed="false">4명</button>
-        <button type="button" data-size="5" aria-pressed="true">5명</button>
-        <button type="button" data-size="6" aria-pressed="false">6명</button>
+      <div class="seg" role="group" aria-label="발표자 수">
+        <button type="button" data-size="1" aria-pressed="false">발표 1명</button>
+        <button type="button" data-size="2" aria-pressed="true">발표 2명</button>
       </div>
     </div>
-    <p class="note">역할은 평가 기준(루브릭)에 맞춰 나눴습니다. 각자 어떤 점수를 책임지는지 분명해지고, 학기 말 동료평가 때도 기여가 잘 보입니다. 이름 칸은 회의에서 채웁니다.</p>
+    <p class="note">5명 전원이 자료조사를 나눠 맡고(11/9~11/11), 이후 발표 1~2명과 PPT·스토리 플로우 3명으로 나뉩니다. 이름 칸은 회의에서 채웁니다.</p>
     <div class="tbl"><table>
-      <thead><tr><th>역할</th><th>담당자</th><th>보고서 장</th><th>책임 배점</th><th>이번 주 할 일</th><th>발표</th></tr></thead>
+      <thead><tr><th>담당자</th><th>자료조사 주제 (전원)</th><th>조사 산출물</th><th>이후 역할</th><th>맡는 파트</th></tr></thead>
       <tbody id="rnr"></tbody>
     </table></div>
   </section>
@@ -163,56 +173,54 @@ footer{font-size:12px;color:var(--ink-2)}
     </ul>
   </section>
 
-  <footer>제안서 상세: 01_kickoff_proposal.md · 일정과 역할은 1차 회의 합의 후 갱신합니다.</footer>
+  <footer>제안 상세: Notion [1차 회의] 오늘의집 캠페인 제안 방향 & R&R · 01_kickoff_proposal.md · 일정과 역할은 1차 회의 합의 후 갱신합니다.</footer>
 </div>
 
 <script>
 (function(){
   const YEAR=2026, START=new Date(YEAR,10,8), DAYS=25; // 11/8 ~ 12/2
   const ROLES={
-    pm:{name:"PM·편집",c:"--r-pm"}, mkt:{name:"시장 분석",c:"--r-mkt"}, cj:{name:"고객 여정·리서치",c:"--r-cj"},
-    camp:{name:"문제·캠페인",c:"--r-camp"}, bud:{name:"예산·측정·출처",c:"--r-bud"}, all:{name:"전원",c:"--r-all"}
+    res:{name:"자료조사 (전원)",c:"--r-res"}, pres:{name:"발표",c:"--r-pres"}, ppt:{name:"PPT·플로우",c:"--r-ppt"}, all:{name:"전원",c:"--r-all"}
   };
-  // day offsets from 11/8; shift=true moves +7 in plan B
+  // day offsets from 11/8; sh=1 moves +7 in plan B
   const TASKS=[
     {ph:"1 · 착수"},
-    {t:"1차 회의: 킥오프",r:"all",s:0,e:0,ms:1,fix:1},
-    {t:"노션 정리·발표일 확인",r:"pm",s:1,e:1,fix:1},
-    {ph:"2 · 리서치"},
-    {t:"시장 규모·경쟁사·재무",r:"mkt",s:1,e:2,sh:1},
-    {t:"네이버 데이터랩 검색 추이",r:"mkt",s:1,e:2,sh:1},
-    {t:"설문 배포 (n≥60)",r:"cj",s:1,e:3,sh:1},
-    {t:"앱 리뷰·커뮤니티 분석",r:"cj",s:1,e:3,sh:1},
-    {t:"시공 견적 미스터리 쇼핑",r:"camp",s:1,e:3,sh:1},
-    {t:"2차 회의: 문제 확정",r:"all",s:3,e:3,ms:1,sh:1},
-    {ph:"3 · 설계·초안"},
-    {t:"고객 여정 맵·인터뷰",r:"cj",s:4,e:5,sh:1},
-    {t:"캠페인 기획 (타깃·메시지·채널)",r:"camp",s:4,e:5,sh:1},
-    {t:"예산표·지표 체계·측정 설계",r:"bud",s:4,e:5,sh:1},
-    {t:"시장·여정 본문 초안",r:"mkt",s:4,e:5,sh:1},
+    {t:"1차 회의: 캠페인 선택·R&R",r:"all",s:0,e:0,ms:1},
+    {t:"노션 출처 DB·AI 로그 만들기",r:"ppt",w:"팀원 E",s:1,e:1},
+    {ph:"2 · 자료조사 (5명 전원)"},
+    {t:"시장·재무·경쟁사",r:"res",w:"팀원 A",s:1,e:2,sh:1},
+    {t:"캠페인 레퍼런스 사례",r:"res",w:"팀원 B",s:1,e:3,sh:1},
+    {t:"설문 배포·앱 리뷰 분류",r:"res",w:"팀원 C",s:1,e:3,sh:1},
+    {t:"시공 견적 체험·인터뷰",r:"res",w:"팀원 D",s:1,e:3,sh:1},
+    {t:"채널·예산·KPI 벤치마크",r:"res",w:"팀원 E",s:1,e:3,sh:1},
+    {t:"2차 회의: 문제·캠페인 확정",r:"all",s:3,e:3,ms:1,sh:1},
+    {ph:"3 · 스토리·보고서"},
+    {t:"스토리 플로우 확정",r:"ppt",w:"C·D·E",s:4,e:4,sh:1},
+    {t:"보고서 본문 초안",r:"ppt",w:"C·D·E",s:4,e:5,sh:1},
     {t:"3차 회의: 초안 리뷰",r:"all",s:5,e:5,ms:1,sh:1},
-    {ph:"4 · 통합·제출"},
-    {t:"통합 편집·4쪽 맞춤",r:"pm",s:6,e:8,sh:1},
-    {t:"출처 목록·AI 활용 내역서",r:"bud",s:6,e:8,sh:1},
-    {t:"보고서 제출 (23:59)",r:"pm",s:9,e:9,ms:1,sh:1,dl:1},
-    {ph:"5 · 발표 준비"},
-    {t:"발표 덱 제작 (13~15장)",r:"all",s:10,e:13,sh:1},
+    {t:"보고서 통합·4쪽 맞춤",r:"ppt",w:"C·D·E",s:6,e:8,sh:1},
+    {t:"출처 목록·AI 활용 내역서",r:"ppt",w:"팀원 E",s:6,e:8,sh:1},
+    {t:"보고서 제출 (23:59)",r:"ppt",w:"팀원 E",s:9,e:9,ms:1,sh:1,dl:1},
+    {ph:"4 · 발표 준비"},
+    {t:"PPT 제작 (13~15장)",r:"ppt",w:"C·D·E",s:10,e:13,sh:1},
+    {t:"키비주얼·앱 목업",r:"ppt",w:"팀원 D",s:6,e:12,sh:1},
+    {t:"발표 스크립트 작성",r:"pres",w:"A·B",s:10,e:13,sh:1},
     {t:"리허설 1·2회",r:"all",s:12,e:14,sh:1},
-    {t:"예상 Q&A 정리",r:"all",s:11,e:15,sh:1},
-    {t:"발표 (20분 + Q&A 10분)",r:"all",s:16,e:16,ms:1,sh:1,dl:1}
+    {t:"예상 Q&A (각자 3개)",r:"all",s:11,e:15,sh:1},
+    {t:"발표 (20분 + Q&A 10분)",r:"pres",w:"A·B + 전원 Q&A",s:16,e:16,ms:1,sh:1,dl:1}
   ];
   const MEETS={
     A:[
-      {d:0,t:"1차 회의 · 킥오프",l:["전체 플로우와 문제 가설 합의","R&R 확정","발표일 확인"]},
-      {d:3,t:"2차 회의 · 문제 확정",l:["설문·리뷰·미스터리 쇼핑 결과 공유","핵심 문제 한 문장 확정"]},
-      {d:5,t:"3차 회의 · 초안 리뷰",l:["장과 장 사이 논리 연결 점검","예산·측정이 문제와 맞는지 확인"]},
+      {d:0,t:"1차 회의 · 킥오프",l:["캠페인 A·B·C 중 선택","발표자 1~2명, 자료조사 분담 확정","발표일 확인"]},
+      {d:3,t:"2차 회의 · 문제·캠페인 확정",l:["5명 자료조사 결과 공유","문제 한 문장과 캠페인 최종 확정","PPT·플로우 팀에 인계"]},
+      {d:5,t:"3차 회의 · 초안 리뷰",l:["문제 → 캠페인 연결 점검","발표자는 말하기 좋은지 관점으로 검토"]},
       {d:9,t:"보고서 제출",l:["내부 마감 18:00","공식 마감 23:59 · E캠퍼스"],dl:1},
       {d:12,t:"리허설 1",l:["20분 시간 맞추기","슬라이드 흐름 점검"]},
       {d:14,t:"리허설 2",l:["예상 질문 모의 Q&A","최종 수정"]},
       {d:16,t:"발표",l:["발표 20분 + 질의응답 10분","질의응답은 팀원 전체 대상"],dl:1}
     ]
   };
-  let plan="A", size=5;
+  let plan="A", size=2;
   const $=s=>document.querySelector(s);
   const css=v=>`var(${v})`;
   const dateOf=o=>{const d=new Date(START);d.setDate(d.getDate()+o);return d};
@@ -247,7 +255,7 @@ footer{font-size:12px;color:var(--ink-2)}
       if(t.ph){h+=`<div class="g-phase">${t.ph}</div>`;return}
       let s=t.s+off(t), e=t.e+off(t);
       const r=ROLES[t.r];
-      h+=`<div class="g-label"><span>${t.t}</span><span class="who">${r.name} · ${s===e?fmt(s):fmt(s)+" – "+fmt(e)}</span></div>`;
+      h+=`<div class="g-label"><span>${t.t}</span><span class="who">${t.w||r.name} · ${s===e?fmt(s):fmt(s)+" – "+fmt(e)}</span></div>`;
       for(let i=0;i<DAYS;i++){
         const we=[0,6].includes(dateOf(i).getDay());
         let inner="";
@@ -265,29 +273,19 @@ footer{font-size:12px;color:var(--ink-2)}
   function renderMs(){
     $("#ms-list").innerHTML=meets().map(m=>`<div class="ms-card${m.dl?" deadline":""}"><span class="date">${fmt(m.d)}</span><h3>${m.t}</h3><ul>${m.l.map(x=>`<li>${x}</li>`).join("")}</ul></div>`).join("");
   }
-  const RNR={
-    pm:{ch:"1장 + 전체 통합",pts:"전 항목",todo:"노션 정리, 발표일 확인, 덱 템플릿, 통합 편집",pr:"오프닝·클로징"},
-    mkt:{ch:"2장 시장 분석",pts:"7점 (진단)",todo:"최신 시장 규모, 경쟁사 4~6곳 표, 데이터랩 검색 추이",pr:"시장 분석"},
-    cj:{ch:"3장 고객 여정",pts:"7점 (진단)",todo:"설문 배포(n≥60), 리뷰 50~100건 분류, 인터뷰 3~5명",pr:"고객 여정"},
-    camp:{ch:"4~5장 문제·캠페인",pts:"7점 (제안)",todo:"시공 견적 미스터리 쇼핑, 문제 문장, 캠페인 초안",pr:"문제·캠페인"},
-    bud:{ch:"6~8장 예산·측정·출처",pts:"4 + 4 + 3점",todo:"예산표·지표 체계 템플릿, 출처 DB 관리, AI 내역서",pr:"예산·측정"}
-  };
-  const LAYOUT={
-    3:[["pm","mkt"],["cj","camp"],["camp","bud"]],
-    4:[["pm","bud"],["mkt"],["cj"],["camp"]],
-    5:[["pm"],["mkt"],["cj"],["camp"],["bud"]],
-    6:[["pm"],["mkt"],["cj"],["camp","전략: 타깃·메시지"],["camp","실행: 채널·크리에이티브"],["bud"]]
-  };
+  const PEOPLE=[
+    {id:"A",res:"시장·재무·경쟁사 (시장 규모 최신화, 경쟁사 4~6곳, 데이터랩 검색 추이)",out:"시장 요약, 경쟁 포지셔닝 맵",two:["pres","앞부분: 오프닝·시장·고객 여정·문제"],one:["pres","발표 전체 20분"]},
+    {id:"B",res:"캠페인 레퍼런스 (국내외 이사·웨딩·Life Event 캠페인 사례 5개)",out:"사례 표, 우리 캠페인과의 차이",two:["pres","뒷부분: 캠페인·예산·측정·클로징"],one:["ppt","캠페인 파트 (D와 분담)"]},
+    {id:"C",res:"고객 조사 (설문 n≥60 설계·배포, 앱 리뷰 50~100건 분류)",out:"설문 차트, 리뷰 키워드 표",two:["ppt","오프닝·시장·고객 여정·문제 슬라이드"],one:["ppt","오프닝·시장·고객 여정·문제 슬라이드"]},
+    {id:"D",res:"고객 여정 체험 (시공 견적 직접 신청, 인터뷰 3~5명)",out:"여정 맵 초안, 화면 캡처",two:["ppt","캠페인 슬라이드: 키비주얼·앱 목업"],one:["ppt","캠페인 슬라이드: 키비주얼·앱 목업"]},
+    {id:"E",res:"채널·예산·KPI 벤치마크 (검색광고·크리에이터·제휴 사례, 지표 기준)",out:"채널 비교표, 예산·KPI 근거",two:["ppt","예산·측정·출처·AI 내역 + 보고서 통합·제출"],one:["ppt","예산·측정·출처·AI 내역 + 보고서 통합·제출"]}
+  ];
   function renderRnr(){
-    const rows=LAYOUT[size].map((keys,i)=>{
-      const real=keys.filter(k=>RNR[k]); const sub=keys.find(k=>!RNR[k]);
-      const name=real.map(k=>ROLES[k].name).join(" + ")+(sub?` (${sub})`:"");
-      const pick=f=>real.map(k=>RNR[k][f]).join(" / ");
-      const color=css(ROLES[real[0]].c);
-      return `<tr><td><span class="role"><i style="background:${color}"></i>${name}</span></td><td class="note">팀원 ${String.fromCharCode(65+i)}${i===0?" (발제자 제안)":""}</td><td>${pick("ch")}</td><td class="pts">${pick("pts")}</td><td>${pick("todo")}</td><td>${pick("pr")}</td></tr>`;
+    const rows=PEOPLE.map(p=>{
+      const [role,part]=size===1?p.one:p.two; const r=ROLES[role];
+      return `<tr><td><b>팀원 ${p.id}</b></td><td>${p.res}</td><td class="note">${p.out}</td><td><span class="role"><i style="background:${css(r.c)}"></i>${r.name}</span></td><td>${part}</td></tr>`;
     });
-    if(size===3){rows.push(`<tr><td colspan="6" class="note">3명 팀은 출처 정리를 전원이 각자 파트별로 나눠 맡습니다. 동료평가는 1명을 지명합니다.</td></tr>`)}
-    if(size===4){rows.push(`<tr><td colspan="6" class="note">4명 팀은 각자 자기 파트 출처를 표로 제출하고 PM이 합칩니다.</td></tr>`)}
+    rows.push(`<tr><td colspan="5" class="note">${size===1?"발표자가 1명이면 B가 PPT 팀에 합류해 4명이 덱을 만듭니다.":"발표자 2명은 스크립트·리허설·예상 Q&A를 총괄합니다."} 질의응답은 팀원 전체 대상이라 각자 자기 조사 주제의 예상 질문 3개를 준비합니다.</td></tr>`);
     $("#rnr").innerHTML=rows.join("");
   }
   function setPlan(p){plan=p;$("#plan-a").setAttribute("aria-pressed",p==="A");$("#plan-b").setAttribute("aria-pressed",p==="B");
@@ -296,8 +294,8 @@ footer{font-size:12px;color:var(--ink-2)}
   $("#plan-b").addEventListener("click",()=>setPlan("B"));
   document.querySelectorAll("[data-size]").forEach(b=>b.addEventListener("click",()=>{
     size=+b.dataset.size;document.querySelectorAll("[data-size]").forEach(x=>x.setAttribute("aria-pressed",x===b));
-    try{localStorage.setItem("ohou-size",size)}catch(e){} renderRnr()}));
-  try{const p=localStorage.getItem("ohou-plan");if(p==="A"||p==="B")plan=p;const s=+localStorage.getItem("ohou-size");if([3,4,5,6].includes(s))size=s}catch(e){}
+    try{localStorage.setItem("ohou-pres",size)}catch(e){} renderRnr()}));
+  try{const p=localStorage.getItem("ohou-plan");const s0=localStorage.getItem("ohou-pres");if(p==="A"||p==="B")plan=p;const s=+s0;if([1,2].includes(s))size=s}catch(e){}
   document.querySelectorAll("[data-size]").forEach(x=>x.setAttribute("aria-pressed",+x.dataset.size===size));
   renderLegend();renderRnr();setPlan(plan);
 })();
