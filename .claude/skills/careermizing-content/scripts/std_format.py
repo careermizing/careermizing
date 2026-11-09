@@ -71,7 +71,7 @@ def css(accent):
 .std .tbl .hd {{ padding-top: 24px; padding-bottom: 14px; border-bottom: 3px solid var(--ink); font-weight: 700; font-size: 26px; color: var(--gray); }}
 .std .tbl .rw {{ align-items: center; min-height: 196px; padding-top: 26px; padding-bottom: 26px; }}
 .std .tbl .rw + .rw {{ border-top: 3px solid var(--line); }}
-.std .tbl .c1 {{ flex: 0 0 210px; font-weight: 700; font-size: 34px; line-height: 1.4; word-break: keep-all; }}
+.std .tbl .c1 {{ flex: 0 0 250px; font-weight: 700; font-size: 34px; line-height: 1.4; word-break: keep-all; }}
 .std .tbl .c2 {{ flex: 1; font-weight: 700; font-size: 37px; line-height: 55.5px; word-break: keep-all; }}
 .std .tbl .rw.on .c2 {{ color: var(--a); }}
 
@@ -263,7 +263,8 @@ def block(b, md, esc):
         return f'<div class="panel"><div class="pt0">{md(b.get("title", ""))}</div>{rows}</div>'
     if k == "xlist":
         xrs = "".join(f'<div class="xr{" ok" if r.get("ok") else ""}"><div class="x">{"✓" if r.get("ok") else "×"}</div><div class="tx">{md(r["text"])}</div></div>' for r in b.get("rows", []))
-        return f'<div class="xl"><div class="xt">{md(b.get("title", ""))}</div>{xrs}</div>'
+        xt = f'<div class="xt">{md(b["title"])}</div>' if b.get("title") else ""
+        return f'<div class="xl">{xt}{xrs}</div>'
     if k == "text":
         return f'<div class="txt">{md(b.get("text", ""))}</div>'
     if k == "spacer":
