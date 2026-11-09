@@ -22,6 +22,13 @@ const path = require('path');
     await page.evaluate(() => document.fonts.ready);
     const el = await page.$('.slide');
     const over = await el.evaluate(e => e.scrollHeight - e.clientHeight);
+    const clash = await el.evaluate(e => {
+      const body = e.querySelector('.body'); const c = e.querySelector('.concl, .disc');
+      if (!body || !c) return 0;
+      const b = body.getBoundingClientRect().bottom, t = e.querySelector('.concl') ? e.querySelector('.concl').getBoundingClientRect().top : c.getBoundingClientRect().top;
+      return Math.round(b - t + 24);
+    });
+    if (clash > 0) console.warn(`WARN ${f}: 본문이 결론 영역을 ${clash}px 침범 — 블록 수·문장을 줄이세요`);
     if (over > 0) console.warn(`WARN ${f}: content overflows by ${over}px — 카피를 줄이거나 카드 수를 줄이세요`);
     const box = await el.boundingBox();
     await page.setViewportSize({ width: Math.round(box.width), height: Math.round(box.height) });

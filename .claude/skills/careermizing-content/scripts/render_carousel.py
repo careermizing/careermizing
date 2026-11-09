@@ -10,7 +10,7 @@ PNG가 필요하면 같은 폴더의 snap.js(Playwright)를 돌린다.
   node snap.js out_dir            # slide-01.png … 생성
 
 스펙 형식은 ../assets/example-spec.json 과 SKILL.md 참고.
-인라인 마크업: {{포인트색}}  **굵게**  ==형광펜==  ~~취소선~~  줄바꿈은 \n
+인라인 마크업: {{포인트색}}  **굵게**  ==형광펜==  ~~취소선~~  [[보통 굵기]]  줄바꿈은 \n
 """
 import html
 import json
@@ -18,6 +18,9 @@ import os
 import re
 import shutil
 import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import std_format  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TOKENS = json.load(open(os.path.join(HERE, "..", "assets", "tokens.json"), encoding="utf-8"))
@@ -30,7 +33,7 @@ FONT_LINKS = {
     ],
     "google": [
         '<link rel="preconnect" href="https://fonts.googleapis.com">',
-        '<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Raleway:wght@100;600&family=Inter:wght@500;600;700&display=swap" rel="stylesheet">',
+        '<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800;900&family=Nanum+Pen+Script&family=Raleway:wght@100;600&family=Inter:wght@500;600;700&display=swap" rel="stylesheet">',
     ],
 }
 
@@ -46,6 +49,7 @@ def md(text, accent_class="pt"):
     t = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", t, flags=re.S)
     t = re.sub(r"==(.+?)==", r'<mark>\1</mark>', t, flags=re.S)
     t = re.sub(r"~~(.+?)~~", r"<s>\1</s>", t, flags=re.S)
+    t = re.sub(r"\[\[(.+?)\]\]", r'<span class="r">\1</span>', t, flags=re.S)
     return t.replace("\n", "<br>")
 
 
@@ -390,6 +394,8 @@ def cards_html(cards, numbered=True, square=False):
 
 def build_slide(spec, s, i, n):
     t = s["type"]
+    if t.startswith("std_"):
+        return std_format.build(spec, s, i, n, md, esc)
     th = theme_class(s, {"cover_typo": "dark", "cta_worksheet": "dark", "datalist": "datalist",
                          "promo_cards": "gradient", "promo_cta": "dark2", "steps": "light",
                          "service_placeholder": "dark2"}.get(t, "light"))
@@ -644,7 +650,7 @@ def main():
     spec = json.load(open(spec_path, encoding="utf-8"))
     CANVAS["v"] = str(spec.get("canvas", "1350"))
     os.makedirs(out_dir, exist_ok=True)
-    css = build_css(spec)
+    css = build_css(spec) + std_format.css(spec.get("accent", TOKENS["colors"]["brand"]["point"]))
     slides = spec["slides"]
     n = len([s for s in slides if s.get("type") != "note"])
     rendered = []
