@@ -219,7 +219,8 @@ def block(b, md, esc):
         return f'<div class="ncards"{gap}>{"".join(parts)}</div>'
     if k == "table":
         hd = b.get("columns", ["", ""])
-        rows = "".join(f'<div class="rw{" on" if r.get("on") else ""}" style="min-height:{b.get("row_height", 196)}px"><div class="c1">{md(r["left"])}</div><div class="c2">{md(r["right"])}</div></div>'
+        pad = "padding-top:16px;padding-bottom:16px;" if b.get("compact") else ""
+        rows = "".join(f'<div class="rw{" on" if r.get("on") else ""}" style="{pad}min-height:{b.get("row_height", 196)}px"><div class="c1">{md(r["left"])}</div><div class="c2">{md(r["right"])}</div></div>'
                        for r in b.get("rows", []))
         return f'<div class="tbl"><div class="hd"><div class="c1" style="font-size:26px;color:inherit">{md(hd[0])}</div><div>{md(hd[1])}</div></div>{rows}</div>'
     if k == "bar":
