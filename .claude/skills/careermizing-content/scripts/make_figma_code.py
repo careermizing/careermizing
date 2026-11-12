@@ -24,6 +24,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 spec = json.load(open(sys.argv[1], encoding="utf-8"))
 cfg = json.load(open(sys.argv[2], encoding="utf-8"))
 src = open(os.path.join(HERE, "figma_std_builder.js"), encoding="utf-8").read()
+src = "\n".join(l for l in src.split("\n") if not l.lstrip().startswith("//"))  # 주석 제거(용량 절약)
 code = src.replace("__SPEC__", json.dumps(spec, ensure_ascii=False)).replace("__CFG__", json.dumps(cfg, ensure_ascii=False))
 if len(code) > 50000:
     sys.exit(f"code too long: {len(code)} chars (limit 50000) — 스펙의 caption 등 불필요한 필드를 빼세요")
