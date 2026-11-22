@@ -170,7 +170,7 @@ def _font_path(weight):
 
 def text_width(text: str, size: float, weight: str = "regular") -> float:
     """한 줄 텍스트의 폭(pt). 마크업 기호는 제거하고 잰다. 폰트가 없으면 근사치."""
-    plain = re.sub(r"\*\*|\{\{|\}\}|\[\[|\]\]", "", text)
+    plain = re.sub(r"\*\*|\{\{|\}\}|\[\[|\]\]|==", "", text)
     key = weight
     if key not in _FONT_CACHE:
         p = _font_path(weight)
@@ -199,7 +199,7 @@ def fit_size(text, max_w, sizes, weight="regular"):
 # ═════════════════════════════════════════════════════════════
 # 3. 마크업 파서
 # ═════════════════════════════════════════════════════════════
-_TOKEN = re.compile(r"(\*\*.+?\*\*|\{\{.+?\}\}|\[\[.+?\]\])")
+_TOKEN = re.compile(r"(\*\*.+?\*\*|\{\{.+?\}\}|\[\[.+?\]\]|==.+?==)")
 
 
 @dataclass
@@ -207,6 +207,7 @@ class Run:
     text: str
     bold: bool = False
     color: str | None = None
+    hl: bool = False
 
 
 def parse(text: str) -> list[list[Run]]:
@@ -220,6 +221,8 @@ def parse(text: str) -> list[list[Run]]:
                 runs.append(Run(part[2:-2], bold=True))
             elif part.startswith("{{"):
                 runs.append(Run(part[2:-2], bold=True, color=C["blue"]))
+            elif part.startswith("==") and part.endswith("==") and len(part) > 4:
+                runs.append(Run(part[2:-2], bold=True, hl=True))
             elif part.startswith("[["):
                 runs.append(Run(part[2:-2], color=C["blue_label"]))
             else:
@@ -529,6 +532,8 @@ class Deck:
                 f.name = FONT if bold else FONT_W[weight]
                 _set_ea_font(run, f.name)
                 f.color.rgb = rgb(r.color or color)
+                if r.hl:
+                    _highlight(run, HL_COLOR)
         if check:  # 넘침 점검: 줄 폭 > 상자 폭이면 (자동 줄바꿈되어) 줄 수가 늘어남
             lines = 0
             for line in text.split("\n"):
@@ -1416,6 +1421,24 @@ class Deck:
 # ═════════════════════════════════════════════════════════════
 def _fmt(v):
     return f"{v:g}" if isinstance(v, (int, float)) else str(v)
+
+
+HL_COLOR = "C9ECF5"  # ==형광 하이라이트== 배경 (다크 장표에서는 HL_COLOR를 바꿔 쓴다)
+
+
+def _highlight(run, color):
+    rPr = run._r.get_or_add_rPr()
+    hl = etree.Element(qn("a:highlight"))
+    etree.SubElement(hl, qn("a:srgbClr"), {"val": color})
+    first = None
+    for tag in ("a:latin", "a:ea", "a:cs", "a:sym", "a:hlinkClick"):
+        first = rPr.find(qn(tag))
+        if first is not None:
+            break
+    if first is not None:
+        first.addprevious(hl)
+    else:
+        rPr.append(hl)
 
 
 def _set_ea_font(run, name):
