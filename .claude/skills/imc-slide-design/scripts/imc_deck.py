@@ -519,7 +519,7 @@ class Deck:
         s = self.slide("light")
         self.text(s, 0, 1.45, SLIDE_W, 0.5, f"|  {title}  |", size=24, bold=True, color=self.t["primary"], align="c")
         n = len(groups)
-        cw = 2.55
+        cw = min(2.55, (SLIDE_W - 2 * MARGIN_X - (n - 1) * 0.25) / n)
         gap = (SLIDE_W - 2 * MARGIN_X - n * cw) / max(1, n - 1) if n > 1 else 0
         for i, (head, items) in enumerate(groups):
             x = MARGIN_X + i * (cw + gap)
@@ -667,7 +667,7 @@ class Deck:
         return s
 
     def compare_table(self, section, title, rows, col_w, focus_col=None, source="", callout=None, pill=None, size=13.5,
-                      align=None):
+                      align=None, row_h=0.62):
         s = self.slide("light", section=section)
         ty = self.title(s, title)
         y = ty + 0.35
@@ -677,7 +677,7 @@ class Deck:
         if source:
             self.source(s, source, y=y, align="r")
             y += 0.28
-        self.table(s, MARGIN_X, y, col_w, rows, focus_col=focus_col, size=size, align=align,
+        self.table(s, MARGIN_X, y, col_w, rows, focus_col=focus_col, size=size, align=align, row_h=row_h,
                    fill_to=(SLIDE_H - 1.3) if callout else (SLIDE_H - 0.8))
         if callout:
             self.callout(s, callout, y=SLIDE_H - 1.1)
@@ -762,14 +762,14 @@ class Deck:
             self.text(s, 0.6, 6.4, SLIDE_W - 1.2, 0.4, note, size=11, color=self.t["hilite"], align="c")
         return s
 
-    def imc_matrix(self, groups: list[dict], journey=("인지", "고려", "구매"), tag="IMC 개요"):
+    def imc_matrix(self, groups: list[dict], journey=("인지", "고려", "구매"), tag="IMC 개요", title=None):
         """프로그램 × (채널/타깃특성/목적) + 고객여정 점. groups=[{name, items:[{name, channel, target, goal, stages:[0,1]}]}]
         (참조: 아르르 p19)"""
         s = self.slide("light", section=tag)
-        y0 = 1.0
+        y0 = (self.title(s, title) + 0.35) if title else 1.0
         gw, iw = 1.25, 1.75
         cw = [1.95, 2.0, 1.8]
-        jw = 0.78
+        jw = 0.78 if len(journey) <= 3 else 0.62
         x0 = MARGIN_X
         xc = x0 + gw + iw + 0.1
         # 헤더
@@ -781,7 +781,7 @@ class Deck:
         for j, jn in enumerate(journey):
             self.label(s, xj + j * jw + 0.05 * j, y0 + 0.55, jw, 0.36, jn, fill=self.t["primary"], size=12)
         total_items = sum(len(g["items"]) for g in groups)
-        rh = min(1.0, (SLIDE_H - 0.8 - (y0 + 1.05)) / total_items - 0.07)
+        rh = min(1.2, (SLIDE_H - 0.8 - (y0 + 1.05)) / total_items - 0.07)
         yy = y0 + 1.05
         for g in groups:
             gh = len(g["items"]) * (rh + 0.07) - 0.07
@@ -823,7 +823,7 @@ class Deck:
             self.text(s, 0.85, y, 6.3, h, body, size=14, color=c_main if dark else self.t["text"], line_spacing=1.4,
                       name="blk_body")
             y += h + 0.2
-        self.image(s, 8.0, 0.55, 4.75, SLIDE_H - 1.5 if not effect else SLIDE_H - 2.9, visual_label,
+        self.image(s, 8.0, 0.75, 4.75, SLIDE_H - 1.7 if not effect else SLIDE_H - 3.1, visual_label,
                    fill="353B40" if dark else self.t["gray2"])
         if effect:
             eb = self.rect(s, 8.0, SLIDE_H - 2.2, 4.75, 1.4, fill="353B40" if dark else self.t["tint2"], radius=0.15)
@@ -957,6 +957,76 @@ class Deck:
             h = estimate_lines(body, 11, SLIDE_W - 2 * MARGIN_X, tracking=-0.1) * 11 * 1.35 / 72 + 0.05
             self.text(s, MARGIN_X, y, SLIDE_W - 2 * MARGIN_X, h, body, size=11, color=self.t["text"], line_spacing=1.35, name="app_body")
             y += h + 0.18
+        return s
+
+    def divider(self, part, title, question="", parts: list[str] | None = None, current=0, pages=""):
+        """파트 구분 장표. 짙은 배경 + 큰 파트명 + 이 파트가 답할 질문 + 하단 진행 표시."""
+        s = self.slide("deep", number=False)
+        if pages:
+            self.text(s, SLIDE_W - 5.6, 1.0, 5.0, 1.6, pages, size=88, bold=True, color="1A6F89", align="r",
+                      tracking=-3, name="div_pages")
+        self.text(s, 0.9, 2.15, 6, 0.4, f"PART {part}", size=16, bold=True, color=self.t["hilite"], name="div_part")
+        self.text(s, 0.9, 2.6, 11.0, 0.9, title, size=40, bold=True, color=self.t["white"], tracking=-1.2, name="div_title")
+        self.rect(s, 0.9, 3.65, 0.8, 0.06, fill=self.t["hilite"])
+        if question:
+            self.text(s, 0.9, 3.95, 11.0, 0.9, question, size=18, color=self.t["tint"], line_spacing=1.35, name="div_q")
+        if parts:
+            n = len(parts)
+            gap = 0.12
+            w = (SLIDE_W - 1.8 - gap * (n - 1)) / n
+            for i, p_ in enumerate(parts):
+                cur = i == current
+                b = self.rect(s, 0.9 + i * (w + gap), SLIDE_H - 1.05, w, 0.42, fill=self.t["primary"] if cur else None,
+                              line=None if cur else self.t["mid"], line_w=0.75, radius=0.21)
+                self.shape_text(b, f"{chr(65 + i)}  {p_}", size=12, bold=cur, color=self.t["white"] if cur else self.t["mid"])
+        return s
+
+    def phone_flow(self, section, title, steps: list[tuple[str, str, str]], phone_w=1.75, source="", callout=None,
+                   focus_last=True):
+        """모바일 화면 n개를 단계별로 나열. steps=[(단계명, 화면 라벨, 아래 설명)]. 화면은 목업 자리."""
+        s = self.slide("light", section=section)
+        ty = self.title(s, title)
+        n = len(steps)
+        colw = (SLIDE_W - 2 * MARGIN_X) / n
+        ph = phone_w * 2.05
+        yl = ty + 0.4
+        yp = yl + 0.5
+        for i, (head, scr, cap) in enumerate(steps):
+            cx = MARGIN_X + colw * (i + 0.5)
+            hot = focus_last and i == n - 1
+            hb = self.rect(s, cx - 1.2, yl, 2.4, 0.38, fill=self.t["primary"] if hot else self.t["tint"], radius=0.19)
+            self.shape_text(hb, head, size=13, bold=True, color=self.t["white"] if hot else self.t["deep"])
+            self.phone(s, cx - phone_w / 2, yp, phone_w, scr)
+            self.text(s, cx - colw / 2 + 0.15, yp + ph + 0.12, colw - 0.3, 0.6, cap, size=12.5, color=self.t["text"],
+                      align="c", line_spacing=1.25, name="pf_cap")
+            if i < n - 1:
+                self.text(s, cx + colw / 2 - 0.25, yp + ph / 2 - 0.35, 0.5, 0.6, "›", size=34, bold=True,
+                          color=self.t["primary"], align="c", name="pf_arrow")
+        if source:
+            self.source(s, source, y=(SLIDE_H - 1.5) if callout else None, align="r")
+        if callout:
+            self.callout(s, callout, y=SLIDE_H - 1.1)
+        return s
+
+    def closing(self, title, tagline, rows: list[tuple[str, str]], end="감사합니다"):
+        """마무리. 콘셉트 + 문제/전략/IMC 세 문장 요약."""
+        s = self.slide("deep", number=False)
+        self.text(s, 0.6, 0.9, SLIDE_W - 1.2, 0.9, title, size=44, bold=True, color=self.t["white"], align="c",
+                  tracking=-1.5, name="close_title")
+        self.text(s, 0.6, 1.85, SLIDE_W - 1.2, 0.4, tagline, size=16, color=self.t["hilite"], align="c", name="close_tag")
+        y = 2.75
+        for lab, body in rows:
+            self.label(s, 1.4, y, 1.6, 0.8, lab, fill=self.t["primary"], size=15)
+            b = self.rect(s, 3.1, y, SLIDE_W - 4.5, 0.8, fill="10677F")
+            self.shape_text(b, body, size=15, color=self.t["white"], align="l", margin=0.3, em_color=self.t["hilite"])
+            y += 0.95
+        self.text(s, 0.6, SLIDE_H - 1.2, SLIDE_W - 1.2, 0.6, end, size=24, bold=True, color=self.t["white"], align="c",
+                  name="close_end")
+        return s
+
+    def note(self, s, text):
+        """발표자 노트(스크립트)."""
+        s.notes_slide.notes_text_frame.text = text
         return s
 
     # ---- 저장 / 검수 --------------------------------------------------------
