@@ -13,11 +13,17 @@ description: 마케팅 IMC 제안서 장표(pptx)를 레퍼런스 덱(아르르 
 | 파일 | 역할 |
 |---|---|
 | `scripts/imc_deck.py` | 빌더 라이브러리 (`Deck` 클래스, 20개 장표 유형, 린트, 저장) |
-| `scripts/render.sh` | pptx → pdf → png + `contact.png` 컨택트시트 (Pretendard 자동 설치) |
+| `scripts/ir_kit.py` | **2차부터 기본 빌더.** IR 덱 스킬(chief-staff `careermizing-ir-deck`의 `cm_deck.py`)을 틸 팔레트로 재색한 pt 단위 컴포넌트 (유리 카드, 말풍선 pill, 진행선, KPI 타일, 도형 막대, 벡터 아이소메트릭 일러스트). 두위드 에셋·카피라이트는 제외 |
+| `scripts/render.sh` | pptx → pdf → png + `contact.png` 컨택트시트 (Pretendard 자동 설치). `pptx2pdf.py`로 한글-영문 자동 간격을 끄고 변환 |
 | `examples/showcase.py` (+ `showcase.pptx`, `showcase_contact.png` 미리보기) | 모든 유형을 한 번씩 쓰는 20장 샘플 (오늘의집 스토리라인 내용). 사용법 참고용 |
 | `references/design-system.md` | 색·타입·간격·문장 규칙 (왜 이렇게 생겼는지, do/don't) |
 | `references/archetypes.md` | 유형 카탈로그: 언제 쓰는지, 시그니처, 레퍼런스 출처 |
 | `references/storyline-to-slides.md` | 오늘의집 스토리라인 V3(20P) → 유형 매핑표와 제작 순서 |
+
+## 두 가지 빌더
+
+- `ir_kit.py` (권장): 960×540pt 그리드. 좌측 정렬 **한 줄 헤드라인(24B) + 한 줄 서브헤드(18M)**, 3열 카드 x=38/337/636(폭 285), 2열 x=38/492(폭 430), pill 행 y=162 → 카드 y=215~483, 각주 좌하단. 사용 예: `ohou-team-project/deck/build_deck_v2.py`. 상세 규칙은 chief-staff `careermizing-ir-deck/references/design-system.md`, `copy-tone.md`를 따른다(강조 카드·하이라이트는 장표당 1개, 병렬 항목 사이에는 진행선을 긋지 않는다).
+- `imc_deck.py` (1차): inch 단위 장표 유형 함수. 빠른 초안용.
 
 ## 작업 순서
 
@@ -51,7 +57,7 @@ description: 마케팅 IMC 제안서 장표(pptx)를 레퍼런스 덱(아르르 
 
 ## 알려진 한계
 
-- LibreOffice 렌더에서는 쉼표·마침표 앞, 숫자와 한글 사이에 **간격이 조금 벌어져 보인다.** run 속성(lang, a:ea, a:latin)을 바꿔도 동일했고, 렌더러 고유 현상으로 보인다. PowerPoint에서는 이 간격이 없어 PDF 미리보기보다 텍스트가 약간 짧다. 줄바꿈 판단은 보수적으로(여유 있게) 한다.
+- LibreOffice 기본 변환은 한글-숫자/영문 사이에 간격을 넣는다(Asian autospace). `render.sh`는 `pptx2pdf.py`(UNO)로 이 옵션을 끄고 변환하므로 PowerPoint와 폭이 같다. UNO 변환이 실패하면 기본 변환으로 대체되며 경고를 띄운다.
 - 차트는 도넛만 네이티브 차트다. 막대는 도형으로 그리므로 값을 바꾸면 `hbar` 인자를 다시 넣어야 한다.
 - 표는 셀마다 사각형으로 만든다(렌더 안정성). 파워포인트 표 객체가 필요하면 별도 변환이 필요하다.
 - 레퍼런스 덱의 이미지·일러스트·로고는 복제하지 않는다(구조·문법만 차용).

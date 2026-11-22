@@ -15,8 +15,13 @@ if ! fc-list | grep -qi pretendard; then
   done
   fc-cache -f >/dev/null
 fi
-soffice --headless --convert-to pdf --outdir "$OUT" "$PPTX" >/dev/null 2>&1
 PDF="$OUT/$(basename "${PPTX%.*}").pdf"
+HERE="$(cd "$(dirname "$0")" && pwd)"
+# 한글-영문/숫자 자동 간격(Asian autospace)을 끈 채 변환 → PowerPoint와 같은 폭 (출처: careermizing-ir-deck)
+if ! timeout 180 python3 "$HERE/pptx2pdf.py" "$PPTX" "$PDF" 2>/dev/null; then
+  echo "[warn] UNO 변환 실패 → 기본 변환(자동 간격 포함)" >&2
+  soffice --headless --convert-to pdf --outdir "$OUT" "$PPTX" >/dev/null 2>&1
+fi
 rm -f "$OUT"/p-*.png
 pdftoppm -png -r "$DPI" "$PDF" "$OUT/p"
 python3 - "$OUT" <<'EOF'
