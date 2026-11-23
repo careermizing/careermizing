@@ -346,7 +346,7 @@ class Deck:
 
     def source(self, s, text, x=None, y=None, w=None, align="r", size=10):
         x = MARGIN_X if x is None else x
-        w = (SLIDE_W - 2 * MARGIN_X) if w is None else w
+        w = (SLIDE_W - 2 * MARGIN_X - 0.55) if w is None else w  # 우하단 페이지 번호와 겹치지 않게
         y = (SLIDE_H - 0.55) if y is None else y
         self.text(s, x, y, w, 0.4, text, size=size, color=self.t["mute"], align=align, name="source", line_spacing=1.1)
 
@@ -365,10 +365,14 @@ class Deck:
             self.shape_text(box, text, size=size, bold=True, color=self.t["ink"], tracking=-0.4)
         return y
 
-    def image(self, s, x, y, w, h, label="IMAGE", fill=None):
-        """이미지 자리표시. 나중에 목업/사진으로 교체."""
+    def image(self, s, x, y, w, h, label="IMAGE", fill=None, label_at=None):
+        """이미지 자리표시. 나중에 목업/사진으로 교체. label_at=y(inch)면 라벨을 그 높이에 따로 둔다."""
         shp = self.rect(s, x, y, w, h, fill=fill or self.t["gray2"], line=self.t["mid"], dash=True, line_w=1.0)
-        self.shape_text(shp, f"[ IMAGE ]\n{label}", size=11, color=self.t["mute"], bold=False, line_spacing=1.3)
+        if label_at is None:
+            self.shape_text(shp, f"[ IMAGE ]\n{label}", size=11, color=self.t["mute"], bold=False, line_spacing=1.3)
+        else:
+            self.text(s, x + 0.3, label_at, w - 0.6, 0.3, f"[ IMAGE ]  {label}", size=10, color=self.t["mute"], align="c",
+                      name="img_label")
         return shp
 
     def phone(self, s, x, y, w=1.9, label="앱 화면 목업"):
@@ -515,20 +519,29 @@ class Deck:
             self.text(s, 0.8, SLIDE_H - 1.2, 6.9, 0.4, team or self.team, size=13, color=self.t["white"], name="cover_team")
         return s
 
-    def index(self, groups: list[tuple[str, list[str]]], title="INDEX"):
+    def index(self, groups: list[tuple], title="INDEX"):
+        """groups=[(대분류, [소분류], (선택)이 파트가 답할 질문)]"""
         s = self.slide("light")
-        self.text(s, 0, 1.45, SLIDE_W, 0.5, f"|  {title}  |", size=24, bold=True, color=self.t["primary"], align="c")
+        self.text(s, 0, 0.75, SLIDE_W, 0.5, f"|  {title}  |", size=24, bold=True, color=self.t["primary"], align="c")
         n = len(groups)
         cw = min(2.55, (SLIDE_W - 2 * MARGIN_X - (n - 1) * 0.25) / n)
         gap = (SLIDE_W - 2 * MARGIN_X - n * cw) / max(1, n - 1) if n > 1 else 0
-        for i, (head, items) in enumerate(groups):
+        for i, g in enumerate(groups):
+            head, items = g[0], g[1]
             x = MARGIN_X + i * (cw + gap)
-            self.text(s, x, 2.25, cw, 0.35, f"{i+1:02d}", size=18, color=self.t["primary"], align="c")
-            hb = self.rect(s, x, 2.65, cw, 0.6, fill=self.t["primary"])
+            self.text(s, x, 1.45, cw, 0.4, f"{i+1:02d}", size=20, bold=True, color=self.t["primary"], align="c")
+            hb = self.rect(s, x, 1.95, cw, 0.75, fill=self.t["primary"])
             self.shape_text(hb, head, size=17, bold=True, color=self.t["white"])
             for j, it in enumerate(items):
-                ib = self.rect(s, x, 3.45 + j * 0.7, cw, 0.52, fill=self.t["gray"])
-                self.shape_text(ib, it, size=13.5, color=self.t["text"])
+                ib = self.rect(s, x, 2.88 + j * 0.78, cw, 0.64, fill=self.t["gray"])
+                self.shape_text(ib, it, size=14, color=self.t["text"])
+            if len(g) > 2:
+                y0 = 2.88 + len(items) * 0.78 + 0.12
+                qb = self.rect(s, x, y0, cw, SLIDE_H - 0.8 - y0, fill=self.t["white"], line=self.t["tint"], line_w=1.0)
+                self.text(s, x + 0.15, y0 + 0.18, cw - 0.3, 0.25, "이 파트의 질문", size=10.5, bold=True,
+                          color=self.t["primary"], align="c", name="idx_qh")
+                self.text(s, x + 0.18, y0 + 0.5, cw - 0.36, SLIDE_H - 0.8 - y0 - 0.6, g[2], size=14,
+                          color=self.t["ink"], align="c", line_spacing=1.45, name="idx_q")
         return s
 
     def exec_summary(self, rows: list[tuple[str, str]], imc: tuple[str, list[tuple[str, str]]] | None = None,
@@ -539,20 +552,20 @@ class Deck:
         lab_w, gap = 1.75, 0.12
         body_w = SLIDE_W - 2 * MARGIN_X - lab_w - gap
         n = len(rows)
-        avail = SLIDE_H - 0.9 - y - (1.45 if imc else 0.1)
-        rh = min(0.78, (avail - (n - 1) * 0.12) / n)
+        ih = 1.75
+        avail = SLIDE_H - 0.75 - y - ((ih + 0.12) if imc else 0.1)
+        rh = min(1.0, (avail - (n - 1) * 0.12) / n)
         for i, (lab, body) in enumerate(rows):
             yy = y + i * (rh + 0.12)
             self.label(s, MARGIN_X, yy, lab_w, rh, lab, fill=self.t["mid"], size=15)
             b = self.rect(s, MARGIN_X + lab_w + gap, yy, body_w, rh, fill=self.t["white"], shadow=True)
-            self.shape_text(b, body, size=16, color=self.t["ink"], tracking=-0.3)
+            self.shape_text(b, body, size=17, color=self.t["ink"], tracking=-0.3)
         if imc:
             concept, progs = imc
             yy = y + n * (rh + 0.12)
-            ih = 1.3
             self.label(s, MARGIN_X, yy, lab_w, ih, "IMC", fill=self.t["deep"], size=15)
             cb = self.rect(s, MARGIN_X + lab_w + gap, yy, 2.9, ih, fill=self.t["white"], shadow=True)
-            self.shape_text(cb, concept, size=21, bold=True, color=self.t["ink"], tracking=-0.5)
+            self.shape_text(cb, concept, size=24, bold=True, color=self.t["ink"], tracking=-0.5)
             px = MARGIN_X + lab_w + gap + 3.0
             pw = (SLIDE_W - MARGIN_X - px - 0.12) / 2
             for k, (nm, ds) in enumerate(progs[:4]):
@@ -560,7 +573,7 @@ class Deck:
                 bx = px + c_ * (pw + 0.12)
                 by = yy + r_ * (ih / 2 + 0.0)
                 tb = self.rect(s, bx, by, pw, ih / 2 - 0.1, fill=self.t["white"], shadow=True)
-                self.shape_text(tb, f"{nm}\n{ds}", size=13, color=self.t["text"], tracking=-0.2, line_spacing=1.1,
+                self.shape_text(tb, f"{nm}\n{ds}", size=14.5, color=self.t["text"], tracking=-0.2, line_spacing=1.2,
                                 em_color=self.t["ink"])
         return s
 
@@ -632,18 +645,18 @@ class Deck:
         return s
 
     def bars_and_notes(self, section, title, bars, bar_title, right_title, notes: list[str], focus=(0,),
-                       source="", callout=None, fmt="{v:g}%"):
+                       source="", callout=None, fmt="{v:g}%", row_h=0.56, gap=0.16, note_size=16, note_gap=0.12):
         """왼쪽 가로 막대(핵심만 진하게 + 점선 박스) / 오른쪽 해석 불릿."""
         s, (lx, ly, lw), (rx, ry, rw) = self.two_panel(section, title, bar_title, right_title, left_w=6.4)
-        bottom = self.hbar(s, lx, ly + 0.1, lw, bars, focus=focus, fmt=fmt)
+        bottom = self.hbar(s, lx, ly + 0.1, lw, bars, focus=focus, fmt=fmt, row_h=row_h, gap=gap)
         if source:
             self.source(s, source, x=lx, y=bottom + 0.05, w=lw, align="l")
         yy = ry + 0.1
         for n in notes:
-            h = estimate_lines(n, 16, rw - 0.4, tracking=-0.2) * 16 * 1.4 / 72 + 0.28
+            h = estimate_lines(n, note_size, rw - 0.4, tracking=-0.2) * note_size * 1.4 / 72 + 0.28
             self.dot(s, rx + 0.1, yy + 0.14, 0.1)
-            self.text(s, rx + 0.3, yy, rw - 0.3, h, n, size=16, color=self.t["text"], line_spacing=1.4, name="note")
-            yy += h + 0.12
+            self.text(s, rx + 0.3, yy, rw - 0.3, h, n, size=note_size, color=self.t["text"], line_spacing=1.4, name="note")
+            yy += h + note_gap
         if callout:
             self.callout(s, callout, y=SLIDE_H - 1.1)
         return s
@@ -742,7 +755,8 @@ class Deck:
     def big_idea(self, name, tagline, chips: list[str], note=""):
         """빅 아이디어 공개. 배경 이미지 자리 + 거대 타이틀 + 프로그램 칩 4개. (참조: 아르르 'Arrr-in-One')"""
         s = self.slide("dark", number=False)
-        self.image(s, 0, 0, SLIDE_W, SLIDE_H, "배경 키비주얼 (공간 사진 / 일러스트) — 위에 어두운 오버레이", fill="3A4247")
+        self.image(s, 0, 0, SLIDE_W, SLIDE_H, "배경 키비주얼 (공간 사진 / 일러스트) — 위에 어두운 오버레이", fill="3A4247",
+                   label_at=SLIDE_H - 0.55)
         ov = self.rect(s, 0, 0, SLIDE_W, SLIDE_H, fill="000000")
         # 투명도는 XML로 설정
         sf = ov._element.spPr.find(qn("a:solidFill"))
@@ -814,15 +828,18 @@ class Deck:
                        fill=self.t["mute"] if dark else self.t["gray"], radius=0.23)
         self.shape_text(sl, f"“ {slogan} ”", size=15, color=c_main)
         y = 2.95
-        for head, lines in blocks:
+        bs = 14.5
+        bodies = ["\n".join(f"•  {l}" for l in lines) for _, lines in blocks]
+        hs = [estimate_lines(bd, bs, 6.5, tracking=-0.2) * bs * 1.45 / 72 + 0.1 for bd in bodies]
+        used = sum(0.45 + h for h in hs)
+        gap = max(0.2, min(0.55, ((SLIDE_H - 0.7) - y - used) / max(1, len(blocks) - 1)))
+        for (head, lines), body, h in zip(blocks, bodies, hs):
             self.rect(s, 0.6, y + 0.04, 0.05, 0.3, fill=c_sub)
-            self.text(s, 0.8, y, 6, 0.38, head, size=18, bold=True, color=c_main, name="blk_head")
+            self.text(s, 0.8, y, 6.6, 0.38, head, size=18, bold=True, color=c_main, name="blk_head")
             y += 0.45
-            body = "\n".join(f"•  {l}" for l in lines)
-            h = estimate_lines(body, 14, 6.3, tracking=-0.2) * 14 * 1.4 / 72 + 0.1
-            self.text(s, 0.85, y, 6.3, h, body, size=14, color=c_main if dark else self.t["text"], line_spacing=1.4,
+            self.text(s, 0.85, y, 6.6, h, body, size=bs, color=c_main if dark else self.t["text"], line_spacing=1.45,
                       name="blk_body")
-            y += h + 0.2
+            y += h + gap
         self.image(s, 8.0, 0.75, 4.75, SLIDE_H - 1.7 if not effect else SLIDE_H - 3.1, visual_label,
                    fill="353B40" if dark else self.t["gray2"])
         if effect:
@@ -899,11 +916,14 @@ class Deck:
             self.text(s, x + 0.15, y + 0.1, w - 0.5, 0.3, per, size=12, color=self.t["ink"] if i < n / 2 else self.t["white"], bold=True)
             self.text(s, x + 0.15, y + 0.4, w - 0.5, 0.4, nm, size=16, bold=True, color=self.t["ink"] if i < n / 2 else self.t["white"])
             body = "\n".join(f"•  {a}" for a in acts)
-            bh = 2.5
+            gh = 1.05
+            bh = (SLIDE_H - 0.75) - (y + 1.05) - gh - 0.15
             b = self.rect(s, x, y + 1.05, w, bh, fill=self.t["white"], line=self.t["gray"], radius=0.1)
-            self.shape_text(b, body, size=13.5, color=self.t["text"], align="l", anchor="t", margin=0.15, line_spacing=1.35)
-            g = self.rect(s, x, y + 1.05 + bh + 0.15, w, 0.95, fill=self.t["tint2"], line=self.t["primary"], dash=True, radius=0.1)
-            self.shape_text(g, f"**통과 기준**\n{gate}", size=12.5, color=self.t["text"], align="l", margin=0.15, line_spacing=1.25)
+            self.text(s, x + 0.18, y + 1.25, w - 0.36, 0.3, "실행", size=11, bold=True, color=self.t["mute"], name="rm_head")
+            self.text(s, x + 0.18, y + 1.6, w - 0.36, bh - 0.7, body, size=14.5, color=self.t["text"], line_spacing=1.55,
+                      name="rm_body")
+            g = self.rect(s, x, y + 1.05 + bh + 0.15, w, gh, fill=self.t["tint2"], line=self.t["primary"], dash=True, radius=0.1)
+            self.shape_text(g, f"**통과 기준**\n{gate}", size=13.5, color=self.t["text"], align="l", margin=0.18, line_spacing=1.3)
         return s
 
     def budget(self, section, title, items: list[tuple[str, float, str]], total_label="10억", notes: list[str] | None = None):
@@ -945,18 +965,18 @@ class Deck:
                 yy += 0.5
         return s
 
-    def appendix(self, title, sections: list[tuple[str, list[str]]], note=""):
+    def appendix(self, title, sections: list[tuple[str, list[str]]], note="", size=11):
         """출처/한계/AI활용 등 부록(밀도 높음, 작은 글씨)."""
         s = self.slide("light", section="Appendix")
         self.text(s, MARGIN_X, 0.8, 8, 0.6, f"|  {title}", size=24, bold=True, color=self.t["ink"])
         y = 1.55
         for head, lines in sections:
-            self.text(s, MARGIN_X, y, 8, 0.3, head, size=13, bold=True, color=self.t["primary"])
-            y += 0.34
+            self.text(s, MARGIN_X, y, 8, 0.3, head, size=size + 2, bold=True, color=self.t["primary"])
+            y += 0.36
             body = "\n".join(lines)
-            h = estimate_lines(body, 11, SLIDE_W - 2 * MARGIN_X, tracking=-0.1) * 11 * 1.35 / 72 + 0.05
-            self.text(s, MARGIN_X, y, SLIDE_W - 2 * MARGIN_X, h, body, size=11, color=self.t["text"], line_spacing=1.35, name="app_body")
-            y += h + 0.18
+            h = estimate_lines(body, size, SLIDE_W - 2 * MARGIN_X, tracking=-0.1) * size * 1.4 / 72 + 0.05
+            self.text(s, MARGIN_X, y, SLIDE_W - 2 * MARGIN_X, h, body, size=size, color=self.t["text"], line_spacing=1.4, name="app_body")
+            y += h + 0.2
         return s
 
     def divider(self, part, title, question="", parts: list[str] | None = None, current=0, pages=""):
