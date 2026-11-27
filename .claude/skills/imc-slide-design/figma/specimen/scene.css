@@ -1,0 +1,42 @@
+/* SCENE BOARD — 오늘의집 발표 전용 구조. kit.css(컴포넌트) 위에 덮어쓰는 콘셉트 레이어.
+   GS 문법은 도구로만 쓰고, 시각 모티프는 '장면'(뷰파인더 프레임 · 장면 번호 · BEFORE/AFTER 컷)으로 통일한다. */
+:root {
+  --bg: #F7F5F2;             /* 따뜻한 페이퍼 — 리빙 톤 (GS 회색과 구분) */
+  --ohou: #35C5F0;           /* 오늘의집 스카이블루 — 면·강조선 */
+  --p-700: #0E7FA5;          /* 글자용 딥 블루 (대비 확보) */
+  --p-100: #DDF3FB; --p-50: #EEF9FD;
+  --warm: #EDE7DF;           /* BEFORE 쪽 면색 */
+  --g-scene: linear-gradient(180deg, rgba(20,24,26,0) 35%, rgba(20,24,26,.78) 100%);
+}
+.frame { background: var(--bg); }
+/* 상단 필름 스트립: 5개 장면 중 현재 위치 */
+.strip { position: absolute; left: 88px; top: 70px; display: flex; gap: 6px; }
+.strip i { width: 54px; height: 8px; border-radius: 4px; background: #D9D4CC; display: block; }
+.strip i.on { background: var(--ohou); width: 90px; }
+.scene-no { position: absolute; left: 88px; top: 92px; font-size: 22px; font-weight: 700; color: var(--p-700); letter-spacing: .02em; }
+.scene-no span { color: var(--mute); font-weight: 500; margin-left: 10px; }
+.title { top: 150px; }
+/* 뷰파인더 코너 — 히어로 비주얼·핵심 장면을 감싸는 시그니처 */
+.vf { position: absolute; }
+.vf::before, .vf::after, .vf > .c1, .vf > .c2 { content: ""; position: absolute; width: 46px; height: 46px; border-color: var(--ohou); border-style: solid; }
+.vf::before { left: 0; top: 0; border-width: 5px 0 0 5px; }
+.vf::after { right: 0; top: 0; border-width: 5px 5px 0 0; }
+.vf > .c1 { left: 0; bottom: 0; border-width: 0 0 5px 5px; }
+.vf > .c2 { right: 0; bottom: 0; border-width: 0 5px 5px 0; }
+.vf .rec { position: absolute; left: 60px; top: 14px; font-size: 18px; font-weight: 700; color: var(--ohou); display: flex; gap: 8px; align-items: center; }
+.vf .rec::before { content: ""; width: 12px; height: 12px; border-radius: 50%; background: #FF5A5A; }
+/* 사진 자리 (실제 방 사진으로 교체) */
+.photo { position: absolute; background: linear-gradient(135deg, #CFC6BA, #A99C8C); display: flex; align-items: center; justify-content: center;
+         color: rgba(255,255,255,.85); font-size: 22px; text-align: center; line-height: 1.5; }
+/* BEFORE / AFTER 컷 */
+.cut { position: absolute; top: 0; bottom: 0; width: 6px; background: var(--ohou); }
+.cut::after { content: "CUT"; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); background: var(--ohou); color: #fff;
+              font-size: 18px; font-weight: 800; padding: 10px 14px; border-radius: 999px; letter-spacing: .08em; }
+.badge { display: inline-block; font-size: 20px; font-weight: 800; letter-spacing: .1em; padding: 8px 18px; border-radius: 999px; }
+.badge.before { background: #fff; color: var(--sub); border: 2px solid #CFC6BA; }
+.badge.after { background: var(--ohou); color: #fff; }
+.pill { background: var(--p-700); }
+.hl { background: linear-gradient(transparent 55%, #BDEBFA 55%); }
+/* 장면 정리 바 (챕터 마지막 장) */
+.bar { background: #fff; border-left: 10px solid var(--ohou); justify-content: flex-start; padding-left: 40px; box-shadow: var(--sh-card); border-radius: 12px; }
+.bar::before { content: "장면 정리"; font-size: 20px; font-weight: 800; color: var(--ohou); margin-right: 26px; letter-spacing: .04em; }
