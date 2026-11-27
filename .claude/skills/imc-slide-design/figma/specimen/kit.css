@@ -1,0 +1,139 @@
+/* GS 에너지(ProSeed 2팀) 레퍼런스 문법 → 오늘의집 틸 매핑 · 1920×1080 프레임 기준
+   CSS 속성은 Figma로 1:1 옮길 수 있게만 썼다 (flex=Auto Layout, box-shadow=Drop shadow, backdrop-filter=Background blur,
+   linear/radial-gradient=Gradient fill). 값 정의는 ../tokens.json 과 같다. */
+@font-face { font-family: "Pretendard"; font-weight: 400; src: url("file:///root/.fonts/Pretendard-Regular.otf"); }
+@font-face { font-family: "Pretendard"; font-weight: 500; src: url("file:///root/.fonts/Pretendard-Medium.otf"); }
+@font-face { font-family: "Pretendard"; font-weight: 600; src: url("file:///root/.fonts/Pretendard-SemiBold.otf"); }
+@font-face { font-family: "Pretendard"; font-weight: 700; src: url("file:///root/.fonts/Pretendard-Bold.otf"); }
+
+:root {
+  /* neutral */
+  --bg: #F5F5F5; --card: #FFFFFF; --ink: #111111; --text: #333333; --sub: #5C5C5C; --mute: #8C8C8C; --line: #E3E3E3;
+  --dark: #282828; --dark-2: #3D3D3D;
+  /* brand (오늘의집 틸 — GS 민트 자리) */
+  --p-900: #0B4F66; --p-700: #0E7FA5; --p-600: #1690B8; --p-500: #1EA3CC; --p-300: #7FD0E6; --p-200: #B5E4F1;
+  --p-100: #D6F1F8; --p-50: #EAF8FC;
+  --alert: #E53935;
+  /* gradients */
+  --g-hero: linear-gradient(125deg, #6FD0EA 0%, #33AFD4 48%, #1C8DB6 100%);
+  --g-wash: linear-gradient(90deg, rgba(245,245,245,0) 52%, #CBEEF7 82%, #8AD5EA 100%);
+  --g-pill: linear-gradient(90deg, #0E7FA5 0%, #1EA3CC 100%);
+  --g-stat: linear-gradient(180deg, #23A9D2 0%, #0E7FA5 100%);
+  --g-ramp-1: #D6F1F8; --g-ramp-2: #B5E4F1; --g-ramp-3: #7FD0E6; --g-ramp-4: #36B2D8; --g-ramp-5: #0E7FA5;
+  /* effects */
+  --sh-card: 0 10px 30px rgba(17, 40, 50, .08);
+  --sh-float: 0 24px 60px rgba(0, 0, 0, .28);
+  --sh-phone: 0 30px 60px rgba(8, 48, 64, .35);
+  --r-card: 28px; --r-sm: 16px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: "Pretendard"; color: var(--text); letter-spacing: -0.02em; }
+.frame { width: 1920px; height: 1080px; position: relative; overflow: hidden; background: var(--bg); }
+.frame.dark { background: var(--dark); color: #fff; }
+
+/* ── 슬라이드 골격 ─────────────────────────────── */
+.tag { position: absolute; left: 88px; top: 72px; font-size: 24px; font-weight: 700; color: var(--p-700); }
+.tag::after { content: " |"; }
+.dark .tag { color: var(--p-300); }
+.logo { position: absolute; right: 88px; top: 70px; font-size: 22px; font-weight: 700; color: var(--ink); display: flex; gap: 10px; align-items: center; }
+.logo i { width: 30px; height: 30px; border-radius: 50%; background: var(--g-pill); display: inline-block; }
+.dark .logo { color: #fff; }
+.pageno { position: absolute; right: 88px; bottom: 44px; font-size: 22px; color: var(--mute); }
+.subtag { position: absolute; left: 0; right: 0; top: 70px; text-align: center; font-size: 26px; font-weight: 600; color: var(--p-700); }
+.title { position: absolute; left: 160px; right: 160px; top: 116px; text-align: center; font-size: 46px; font-weight: 700; color: var(--ink); line-height: 1.32; letter-spacing: -0.03em; }
+.dark .title { color: #fff; }
+.hl { background: linear-gradient(transparent 52%, var(--p-200) 52%); padding: 0 4px; }
+.dark .hl { background: linear-gradient(transparent 52%, rgba(30,163,204,.55) 52%); }
+
+/* ── 컴포넌트 ─────────────────────────────────── */
+/* C01 캡슐 헤더 — 카드 윗변에 반쯤 걸친다 (레퍼런스 핵심 디테일) */
+.cardwrap { position: absolute; }
+.cardwrap .pill { position: absolute; left: 50%; transform: translateX(-50%); top: 0; z-index: 2; }
+.cardwrap .card { position: absolute; left: 0; right: 0; top: 30px; bottom: 0; }
+.pill { height: 60px; padding: 0 44px; border-radius: 999px; background: var(--p-700); color: #fff; font-size: 30px; font-weight: 700;
+        display: flex; align-items: center; justify-content: center; white-space: nowrap; box-shadow: 0 6px 16px rgba(14,127,165,.25); }
+.pill.wide { left: 0 !important; right: 0; transform: none !important; }
+.pill.gray { background: #BDBDBD; color: var(--ink); box-shadow: none; }
+.pill.dark { background: #3F3F3F; }
+.card { background: var(--card); border-radius: var(--r-card); box-shadow: var(--sh-card); }
+.card.mint { background: var(--p-100); box-shadow: none; }
+/* C02 하단 결론 바 */
+.bar { position: absolute; left: 88px; right: 88px; bottom: 82px; height: 78px; background: #E6E6E6; border-radius: 8px;
+       display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 700; color: var(--ink); }
+.bar b { color: var(--p-700); }
+/* C03 다크 밴드 (페르소나 장표 하단) */
+.band { position: absolute; left: 0; right: 0; bottom: 0; height: 216px; background: var(--dark); color: #fff;
+        display: flex; align-items: center; justify-content: center; text-align: center; font-size: 36px; font-weight: 600; line-height: 1.45; }
+.band .hl { background: linear-gradient(transparent 50%, rgba(30,163,204,.6) 50%); }
+/* C04 큰 수치 */
+.stat { font-size: 112px; font-weight: 700; color: var(--p-700); letter-spacing: -0.04em; line-height: 1; }
+.stat.red { color: var(--alert); }
+.stat-cap { position: relative; border-radius: 999px; background: var(--g-stat); color: #fff; text-align: center;
+            box-shadow: 0 16px 36px rgba(14,127,165,.35); display: flex; flex-direction: column; justify-content: center; }
+/* C05 도넛 링 */
+.ring { border-radius: 50%; position: relative; display: flex; align-items: center; justify-content: center; flex-direction: column; }
+.ring .in { position: absolute; inset: 22px; border-radius: 50%; background: #fff; }
+.ring > span { position: relative; z-index: 1; text-align: center; }
+/* C06 셰브론 램프 */
+.chev { display: flex; gap: 0; }
+.chev > div { height: 140px; flex: 1; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 28px; font-weight: 600;
+              color: var(--ink); clip-path: polygon(0 0, calc(100% - 44px) 0, 100% 50%, calc(100% - 44px) 100%, 0 100%, 44px 50%); margin-right: -30px; padding: 0 50px; line-height: 1.25; }
+.chev > div:first-child { clip-path: polygon(0 0, calc(100% - 44px) 0, 100% 50%, calc(100% - 44px) 100%, 0 100%); }
+.chev .d { background: repeating-linear-gradient(90deg, var(--p-500) 0 12px, transparent 12px 22px) top/100% 3px no-repeat,
+                       repeating-linear-gradient(90deg, var(--p-500) 0 12px, transparent 12px 22px) bottom/100% 3px no-repeat, #fff; color: var(--sub); }
+/* C07 인용 버블 + 3D 아바타 자리 */
+.quote { display: flex; align-items: center; gap: 0; }
+.avatar { width: 150px; height: 150px; flex: none; border-radius: 50%; position: relative; z-index: 2;
+          background: radial-gradient(circle at 50% 36%, #F4D2B5 0 20%, transparent 21%), radial-gradient(ellipse at 50% 100%, #5C6B73 0 44%, transparent 45%), radial-gradient(circle at 50% 40%, #E7EEF0, #CFD9DD);
+          box-shadow: 0 10px 24px rgba(0,0,0,.12); }
+.avatar::after { content: "3D 아바타"; position: absolute; bottom: -30px; left: 0; right: 0; text-align: center; font-size: 15px; color: var(--mute); }
+.bubble { background: #fff; border: 2px solid #DADADA; border-radius: 28px; padding: 28px 34px 28px 60px; margin-left: -40px; font-size: 25px; line-height: 1.5; color: var(--text); }
+.bubble b { color: var(--ink); }
+.who { font-size: 17px; color: var(--mute); margin: 10px 0 0 160px; }
+/* C08 폰 목업 (기울기 변형 포함) */
+.phone { width: 330px; height: 690px; border-radius: 56px; background: #1E2326; padding: 14px; box-shadow: var(--sh-phone); position: absolute; }
+.phone::before { content: ""; position: absolute; top: 26px; left: 50%; transform: translateX(-50%); width: 110px; height: 32px; border-radius: 20px; background: #000; z-index: 2; }
+.phone .scr { width: 100%; height: 100%; border-radius: 44px; background: linear-gradient(180deg, #FFFFFF 0%, #EEF6F9 100%);
+              display: grid; place-content: center; gap: 6px; text-align: center; font-size: 20px; color: var(--mute); line-height: 1.45; padding: 30px; }
+.phone .scr b { color: var(--p-700); }
+.tilt-l { transform: perspective(1600px) rotateY(24deg) rotateZ(-8deg); }
+.tilt-r { transform: perspective(1600px) rotateY(-24deg) rotateZ(8deg); }
+/* C09 유리 장벽 */
+.glass { position: absolute; width: 150px; height: 300px; transform: skewY(-18deg); border-radius: 6px;
+         background: linear-gradient(160deg, rgba(190,235,246,.55), rgba(30,163,204,.35)); border: 2px solid rgba(214,241,248,.75);
+         box-shadow: -18px 14px 0 rgba(14,127,165,.35), 0 30px 50px rgba(0,0,0,.35); backdrop-filter: blur(6px);
+         display: flex; align-items: center; justify-content: center; font-size: 70px; font-weight: 800; color: rgba(214,241,248,.95); }
+/* C10 쐐기(카드 → 프로세스 연결 하이라이트) */
+.wedge { position: absolute; clip-path: polygon(0 0, 100% 0, 78% 100%, 22% 100%);
+         background: linear-gradient(180deg, rgba(127,208,230,0) 0%, rgba(127,208,230,.55) 100%); }
+/* C11 점선 포커스 박스 + 빨간 하락 수치 */
+.focus { position: absolute; border: 3px dashed var(--p-500); border-radius: 14px; }
+.drop { position: absolute; color: var(--alert); font-size: 64px; font-weight: 800; letter-spacing: -0.03em; }
+.down { position: absolute; width: 0; height: 0; border-left: 40px solid transparent; border-right: 40px solid transparent; border-top: 46px solid var(--p-500); }
+/* C12 스포트라이트(딤) */
+.dim { position: absolute; inset: 0; background: rgba(40,40,40,.80); }
+.lift { position: absolute; border-radius: 22px; box-shadow: var(--sh-float); overflow: hidden; }
+.arrow3d { position: absolute; width: 0; height: 0; border-left: 34px solid transparent; border-right: 34px solid transparent;
+           border-top: 54px solid #E53935; filter: drop-shadow(0 6px 8px rgba(229,57,53,.45)); }
+.callcard { position: absolute; width: 520px; }
+.callcard .pill { height: 70px; font-size: 34px; }
+.callcard .body { margin-top: -26px; padding: 52px 30px 36px; border-radius: 26px; text-align: center; font-size: 30px; font-weight: 700; color: var(--ink); line-height: 1.45; }
+/* C13 세로바 소제목 + 불릿 (실행 방안 / 기대효과) */
+.vh { font-size: 34px; font-weight: 700; color: var(--ink); display: flex; align-items: center; gap: 14px; }
+.vh::before { content: ""; width: 5px; height: 34px; background: var(--ink); }
+.ul { list-style: none; margin-top: 18px; }
+.ul li { font-size: 23px; line-height: 1.6; padding-left: 26px; position: relative; color: var(--text); }
+.ul li::before { content: "•"; position: absolute; left: 4px; color: var(--ink); }
+.pin { display: inline-flex; align-items: center; gap: 10px; font-size: 24px; font-weight: 700; color: var(--ink); }
+.pin::before { content: ""; width: 26px; height: 26px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: var(--alert); }
+.ab { font-size: 20px; color: var(--sub); }
+/* C14 감정 곡선 이모지 자리 */
+.emo { position: absolute; width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px;
+       box-shadow: 0 4px 10px rgba(0,0,0,.12); }
+.emo.g { background: #FFD45C; } .emo.n { background: #FFE38A; } .emo.b { background: #FF7A59; }
+.chip { display: inline-flex; align-items: center; justify-content: center; border-radius: 14px; background: var(--p-100); color: var(--p-900);
+        font-size: 19px; font-weight: 600; padding: 12px 16px; line-height: 1.35; text-align: center; }
+/* C15 나이 배지 */
+.age { width: 86px; height: 86px; border-radius: 50%; border: 4px solid var(--p-500); background: #fff; color: var(--p-700);
+       display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 800; line-height: 1; text-align: center; }
+.src { position: absolute; font-size: 16px; color: var(--mute); }

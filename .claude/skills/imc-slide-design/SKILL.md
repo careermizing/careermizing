@@ -20,7 +20,21 @@ description: 마케팅 IMC 제안서 장표(pptx)를 레퍼런스 덱(아르르 
 | `references/archetypes.md` | 유형 카탈로그: 언제 쓰는지, 시그니처, 레퍼런스 출처 |
 | `references/storyline-to-slides.md` | 오늘의집 스토리라인 V3(20P) → 유형 매핑표와 제작 순서 |
 
-## 두 가지 빌더
+## Figma로 장표를 찍을 때 (권장 경로)
+
+GS 에너지(ProSeed 2팀) 레퍼런스 문법을 고도화한 Figma 시스템을 쓴다. 단조로움을 없애는 6가지 레버(배경 모드 리듬 · 깊이 · 히어로 비주얼 · 수치 위계 · 사람 · 연속성)가 핵심이다.
+
+| 파일 | 내용 |
+|---|---|
+| `references/figma-gs-system.md` | 캔버스·그리드(1920×1080), 토큰, 컴포넌트 C01~C17 사양, 템플릿 T01~T12, 덱 리듬 규칙, 체크리스트, Figma MCP 작업 순서 |
+| `figma/tokens.json` | Figma Variables/Styles로 등록할 토큰 (틸 매핑 + GS 원본 실측값) |
+| `figma/specimen/templates.html` + `kit.css` | 템플릿 12종 HTML 시안 (CSS 값 = Figma 속성 1:1) |
+| `figma/specimen/png/` | 시안 렌더 (`_contact.png` 한눈에 보기) |
+| `references/ohou-figma-map.md` | 오늘의집 발표 33장 → 템플릿 매핑 |
+
+Figma MCP로 직접 만들 때는 **`figma-use` 스킬을 먼저 불러온 뒤** `figma-gs-system.md` §8 순서를 따른다.
+
+## 두 가지 빌더 (pptx)
 
 - `ir_kit.py` (권장): 960×540pt 그리드. 좌측 정렬 **한 줄 헤드라인(24B) + 한 줄 서브헤드(18M)**, 3열 카드 x=38/337/636(폭 285), 2열 x=38/492(폭 430), pill 행 y=162 → 카드 y=215~483, 각주 좌하단. 사용 예: `ohou-team-project/deck/build_deck_v2.py`. 상세 규칙은 chief-staff `careermizing-ir-deck/references/design-system.md`, `copy-tone.md`를 따른다(강조 카드·하이라이트는 장표당 1개, 병렬 항목 사이에는 진행선을 긋지 않는다).
 - `imc_deck.py` (1차): inch 단위 장표 유형 함수. 빠른 초안용.
